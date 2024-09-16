@@ -6,3 +6,6 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
+
+//*checkeo de bienestar del repositorio
+//*intento de verificacion de apropiada creacion de repositorio con nest
