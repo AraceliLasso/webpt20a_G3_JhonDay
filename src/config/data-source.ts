@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from "typeorm";
 import * as dotenv from 'dotenv';
 import { registerAs } from "@nestjs/config";
 
-dotenv.config({ path: '.env.development'});
+dotenv.config({ path: '.env.development.local'});
 
 console.log({
     DB_NAME: process.env.DB_NAME,
