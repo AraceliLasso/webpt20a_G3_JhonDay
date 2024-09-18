@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsInt, IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator"
 
 export class CreateProductDto {
     @ApiProperty({
@@ -38,4 +38,12 @@ export class CreateProductDto {
       @IsString()
       @IsNotEmpty()
     imgUrl: string;
+    @ApiProperty({
+      type: String,
+      description: "ID de la categoría del producto",
+      required: true,
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  categoryId: string;
 }
