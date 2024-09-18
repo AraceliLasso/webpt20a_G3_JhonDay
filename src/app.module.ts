@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { postgresDataSourceConfig } from './config/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -17,7 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         useFactory: (configService: ConfigService) =>
           configService.get('postgres')
       }),
-      
+      UsersModule,
     ],
   controllers: [AppController],
   providers: [AppService],

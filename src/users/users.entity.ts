@@ -1,3 +1,4 @@
+import { IsBoolean } from "class-validator";
 import { Appointment } from "src/appointment/appointment.entity";
 import { Entity, Column,PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { v4 as uuid} from 'uuid'
@@ -15,6 +16,9 @@ export class User {
 
     @Column({ length: 50, unique: true, nullable: false })
     email: string;
+
+    @Column({nullable: true})
+    age: number;
     
     @Column({ nullable: false })
     password: string;
@@ -29,7 +33,7 @@ export class User {
     @Column({ length: 50, nullable: true })
     city: string;
 
-    @Column({default: false})
+    @IsBoolean()
     admin: boolean
 
 

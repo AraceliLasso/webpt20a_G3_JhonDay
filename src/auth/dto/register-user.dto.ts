@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 
-export class CreateUserDto {
+export class RegisterUserDto {
     
 
     /**
@@ -36,23 +36,6 @@ export class CreateUserDto {
     @IsString()
     password: string;
 
-    /**
-     * La edad del usuario
-     * @example '25'
-     */
-
-    @IsNumber()
-    @IsOptional()
-    age:number
-
-    /**
-     * La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)
-     * @example 'Ejemplo*1'
-     */
-    @IsNotEmpty()
-    @IsString()
-    passwordConfirm: string;
-
 
     /**
      * El teléfono del usuario
@@ -83,5 +66,9 @@ export class CreateUserDto {
     @IsString()
     @IsOptional()
     address?: string;
+
+    constructor(partial: Partial<RegisterUserDto>) {
+        Object.assign(this, partial);
+    }
 
 }
