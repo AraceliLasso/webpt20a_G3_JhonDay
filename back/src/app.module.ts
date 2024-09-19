@@ -5,6 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { postgresDataSourceConfig } from './config/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './category/category.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 
 @Module({
@@ -19,6 +22,9 @@ import { ProductsModule } from './products/products.module';
           configService.get('postgres')
       }),
       ProductsModule,
+      UsersModule,
+      CategoriesModule,
+      AppointmentModule,
     ],
   controllers: [AppController],
   providers: [AppService],
