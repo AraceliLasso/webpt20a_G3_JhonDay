@@ -52,6 +52,4 @@ export class updateUserDto{
     @IsString()
     address: string;
 
-    @IsBoolean()
-    admin: boolean;
 }

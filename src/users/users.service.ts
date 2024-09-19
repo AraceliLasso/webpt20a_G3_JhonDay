@@ -6,17 +6,19 @@ import { UserWithAdminDto } from "./dto/admin-user.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { updateUserDto } from "./dto/update-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-//import { compare} from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt'
+import UserResponseDto from "./dto/response-user.dto";
 
 @Injectable()
 export class UsersService{
     constructor (
         @InjectRepository(User)
         private readonly usersRepository: Repository<User>,
+        private readonly jwtService: JwtService
     ){}
 
-    async login(loginUser: LoginUserDto): Promise<User>{
+    async login(loginUser: LoginUserDto): Promise<{token: string}>{
         const user = await this.usersRepository.findOneBy({email: loginUser.email});
 
         
@@ -25,8 +27,20 @@ export class UsersService{
         if(!isPasswordMatchin){
             throw new HttpException('Email o password incorrectos', HttpStatus.UNAUTHORIZED)
         }
-        return user
-    }
+        const token = await this.createToken(user);
+        return {token}
+
+        }
+
+        private async createToken(user: User){
+            const payload = {
+                id: user.id,
+                email: user.email,
+                admin: user.admin
+            };
+            return this.jwtService.signAsync(payload)
+        }
+    
 
     async getUsers(page: number, limit: number): Promise<UserWithAdminDto[]> {
         const offset = (page - 1) * limit; 
