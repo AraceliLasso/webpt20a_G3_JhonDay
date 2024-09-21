@@ -19,11 +19,11 @@ export class ProductController{
     @Get()
     @ApiOperation({ summary: 'Obtener todos los productos' })
     @ApiResponse({ status: 200, description: 'Productos obtenidos', type: Product })
-    async findAll(
+    async getProducts(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ) {
-        return this.productService.findAll(page, limit);
+        return this.productService.getProducts(page, limit);
     }
 
     @Get(':id')

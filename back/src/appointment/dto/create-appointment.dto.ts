@@ -1,24 +1,28 @@
-import { IsDate, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAppointmentDto {
-  @ApiProperty({ description: 'Appointment date', example: '2024-10-10' })
-  @IsDate()
+  @ApiProperty({
+    description: 'Appointment date and time in ISO format',
+    example: '2024-10-10T14:00:00Z'
+  })
+  @IsDateString() // Valida que sea un string en formato ISO 8601 (fecha y hora)
   @IsNotEmpty()
-  date: Date;
+  date: string; // Cambio de 'date' a 'date' para reflejar fecha y hora en un solo campo
 
-  @ApiProperty({ description: 'Appointment time', example: '14:00' })
-  @IsString()
-  @IsNotEmpty()
-  time: string;
-
-  @ApiProperty({ description: 'Description of the appointment', example: 'Medical consultation' })
+  @ApiProperty({
+    description: 'Description of the appointment',
+    example: 'Medical consultation'
+  })
   @IsString()
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty({ description: 'ID of the user associated with the appointment', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({
+    description: 'ID of the user associated with the appointment',
+    example: '123e4567-e89b-12d3-a456-426614174000'
+  })
   @IsUUID()
   @IsNotEmpty()
-  userId: string;
+  user: string; // Manteniendo el userId para identificar al usuario asociado con el turno
 }

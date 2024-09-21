@@ -29,5 +29,5 @@ export class UpdateProductDto{
         description: "The new image URL of the product",
         required: false,
       })
-      imgUrl: string;
+      imgage: string;
 }

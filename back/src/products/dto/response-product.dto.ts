@@ -35,13 +35,13 @@ export class ProductResponseDto{
         description: "The image URL of the product",
         required: false,
     })
-    imgUrl:string;
+    image:string;
 
     constructor(product: Product) {
         this.id = product.id;
         this.name = product.name;
         this.description = product.description;
         this.price = product.price;
-        this.imgUrl = product.imgUrl;
+        this.image = product.image;
     }
 }

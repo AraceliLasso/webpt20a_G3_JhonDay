@@ -17,7 +17,7 @@ export class ProductService {
         return await this.productRepository.save(newProduct);
     }
 
-    async findAll(page: number, limit: number) {
+    async getProducts(page: number, limit: number) {
         return await this.productRepository.find({
             take: limit,
             skip: (page - 1) * limit,
@@ -43,4 +43,16 @@ export class ProductService {
         return { id };
     }
 
+
+    
+  //*implementacion a pedido de Jhon forntend
+
+  async checkProductExists(itemId: string): Promise<boolean> {
+    const item = await this.productRepository.findOne({ where: { id: itemId } });
+    return !!item; // Devuelve true si el item existe, false si no
+}
+
+async getProductsService(): Promise<Product[]> {
+    return await this.productRepository.find(); // Devuelve todos los productos
+}
 }

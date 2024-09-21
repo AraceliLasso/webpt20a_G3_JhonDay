@@ -6,6 +6,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { User } from 'src/users/users.entity';
 
+
 @Injectable()
 export class AppointmentService {
   constructor(
@@ -13,21 +14,24 @@ export class AppointmentService {
     private readonly appointmentRepository: Repository<Appointment>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+  
   ) {}
 
   // Crear una cita
   async createAppointment(createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
-    const { userId } = createAppointmentDto;
+    const { user } = createAppointmentDto;
 
     // Verificar si el usuario existe
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+    const userExist = await this.userRepository.findOne({ where: { id: user } });
+    if (!userExist) {
+        throw new NotFoundException(`User with ID ${user} not found`);
     }
 
-    const appointment = this.appointmentRepository.create({ ...createAppointmentDto, user });
+    // Asegúrate de pasar el objeto user completo
+    const appointment = this.appointmentRepository.create({ ...createAppointmentDto, user: userExist });
     return await this.appointmentRepository.save(appointment);
-  }
+}
+
 
   // Obtener todas las citas
   async findAll(): Promise<Appointment[]> {
@@ -55,4 +59,6 @@ export class AppointmentService {
     const appointment = await this.findOne(id);
     await this.appointmentRepository.remove(appointment);
   }
+
+  
 }
