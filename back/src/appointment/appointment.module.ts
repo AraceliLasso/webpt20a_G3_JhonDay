@@ -5,11 +5,14 @@ import { AppointmentService } from './appointment.service';
 import { AppointmentController } from './appointment.controller';
 import { User } from 'src/users/users.entity'; // Importar si lo necesitas en el servicio
 import { Product } from 'src/products/products.entity';
-import { ProductService } from 'src/products/products.service';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Appointment, User, Product])],
-  providers: [AppointmentService, ProductService],
+  imports: [
+    TypeOrmModule.forFeature([Appointment, User, Product]),
+    ProductsModule, // Asegúrate de importar este módulo
+  ],
+  providers: [AppointmentService],
   controllers: [AppointmentController],
   exports: [AppointmentService],
 })

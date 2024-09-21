@@ -7,6 +7,7 @@ import { IsUUID } from "class-validator";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
 import { CheckProductExistsResponse } from "./dto/check-product.dto";
+import { SearchDto } from "./dto/search-product.dto";
 
 @ApiTags("Products")
 @Controller("products")
@@ -61,6 +62,13 @@ export class ProductController {
             console.error("Unexpected error in createProduct:", error);
             throw new InternalServerErrorException('Product could not be created');
         }
+    }
+    @Post('search')
+    @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
+    @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
+    @ApiResponse({ status: 404, description: 'No se encontraron productos' })
+    async searchProducts(@Body() searchDto: SearchDto) {
+        return this.productService.searchProducts(searchDto);
     }
 
     @Put(':id')
