@@ -6,19 +6,18 @@ import { ProductResponseDto } from "./dto/response-product.dto";
 import { IsUUID } from "class-validator";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
-
+import { CheckProductExistsResponse } from "./dto/check-product.dto";
 
 @ApiTags("Products")
 @Controller("products")
-export class ProductController{
+export class ProductController {
     constructor(
         private readonly productService: ProductService,
-
-    ){ }
+    ) { }
 
     @Get()
     @ApiOperation({ summary: 'Obtener todos los productos' })
-    @ApiResponse({ status: 200, description: 'Productos obtenidos', type: Product })
+    @ApiResponse({ status: 200, description: 'Productos obtenidos', type: [Product] })
     async getProducts(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -27,8 +26,9 @@ export class ProductController{
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Obtene producto con id' })
+    @ApiOperation({ summary: 'Obtener producto por ID' })
     @ApiResponse({ status: 200, description: 'Producto obtenido', type: Product })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
     async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
         const product = await this.productService.findOne(id);
         if (!IsUUID(4, { each: true })) {
@@ -40,8 +40,19 @@ export class ProductController{
         return product;
     }
 
+    @Get(':id/exists')
+    @ApiOperation({ summary: 'Verificar si un producto existe' })
+    @ApiResponse({ status: 200, description: 'Verificación de existencia', type: CheckProductExistsResponse })
+    async checkProductExists(@Param('id') itemId: string): Promise<CheckProductExistsResponse> {
+        const exists = await this.productService.checkProductExists(itemId);
+        return { exists }; // Devuelve un objeto con la propiedad exists
+    }
+
+
     @Post()
-    @HttpCode(201)
+    @ApiOperation({ summary: 'Crear un nuevo producto' })
+    @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
+    @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
     async createProduct(@Body() createProductDto: CreateProductDto) {
         try {
             const product = await this.productService.create(createProductDto);
@@ -51,11 +62,11 @@ export class ProductController{
             throw new InternalServerErrorException('Product could not be created');
         }
     }
-    
-
 
     @Put(':id')
-    @HttpCode(200)
+    @ApiOperation({ summary: 'Actualizar un producto por ID' })
+    @ApiResponse({ status: 200, description: 'Producto actualizado', type: ProductResponseDto })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
     async updateProduct(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateProduct: UpdateProductDto) {
         const product = await this.productService.findOne(id);
         if (!product) {
@@ -69,15 +80,14 @@ export class ProductController{
     }
 
     @Delete(':id')
-    @HttpCode(204)
+    @ApiOperation({ summary: 'Eliminar un producto por ID' })
+    @ApiResponse({ status: 204, description: 'Producto eliminado exitosamente' })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
     async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {
-
-        const product = this.productService.findOne(id);
-
+        const product = await this.productService.findOne(id);
         if (!product) {
-            throw new InternalServerErrorException("An unexpected error ocurred while deleting the product");
+            throw new InternalServerErrorException("An unexpected error occurred while deleting the product");
         }
         return this.productService.remove(id);
     }
-
 }
