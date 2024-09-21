@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Product } from "../products.entity";
 
 export class ProductResponseDto{
     @ApiProperty({
@@ -35,4 +36,12 @@ export class ProductResponseDto{
         required: false,
     })
     imgUrl:string;
+
+    constructor(product: Product) {
+        this.id = product.id;
+        this.name = product.name;
+        this.description = product.description;
+        this.price = product.price;
+        this.imgUrl = product.imgUrl;
+    }
 }

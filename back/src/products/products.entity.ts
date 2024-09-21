@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Category } from "src/category/entities/category.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 
 
 @Entity({
@@ -22,4 +23,6 @@ export class Product {
         default: 'https://example.com/default-image.jpg'
     })
     imgUrl: string;
+    @ManyToOne(() => Category, category => category.products)
+    category: Category;
 }
