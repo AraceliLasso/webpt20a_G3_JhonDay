@@ -37,7 +37,7 @@ export class CreateProductDto {
   })
   @IsString()
   @IsNotEmpty()
-  imgUrl: string;
+  image: string;
   @ApiProperty({
     type: String,
     description: "ID de la categoría del producto",

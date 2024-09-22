@@ -4,17 +4,11 @@ import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Category } from "./entities/category.entity";
 
-@ApiTags('categories')
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
-    constructor(private readonly categoriesService: CategoriesService) {}
+    constructor(private readonly categoriesService: CategoriesService) { }
 
-    @Post()
-    @ApiOperation({ summary: 'Crear una nueva categoría' })
-    @ApiResponse({ status: 201, description: 'Categoría creada', type: Category })
-    async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
-        return this.categoriesService.create(createCategoryDto);
-    }
 
     @Get()
     @ApiOperation({ summary: 'Listar todas las categorías' })
@@ -30,4 +24,12 @@ export class CategoriesController {
     async findOne(@Param('id') id: string): Promise<Category> {
         return this.categoriesService.findOne(id);
     }
+    @Post()
+    @ApiOperation({ summary: 'Crear una nueva categoría' })
+    @ApiResponse({ status: 201, description: 'Categoría creada', type: Category })
+    async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
+        return this.categoriesService.create(createCategoryDto);
+    }
+
+
 }
