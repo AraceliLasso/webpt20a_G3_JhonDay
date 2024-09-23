@@ -1,11 +1,14 @@
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./products.service";
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { IsUUID } from "class-validator";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
+import { AuthGuard } from "src/guard/auth.guard";
+import { RolesGuard } from "src/guard/roles.guard";
+import { Roles } from "src/decorators/roles.decorator";
 
 
 @ApiTags("Products")
@@ -41,6 +44,8 @@ export class ProductController{
     }
 
     @Post()
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @HttpCode(201)
     async createProduct(@Body() createProductDto: CreateProductDto) {
         try {
@@ -55,6 +60,8 @@ export class ProductController{
 
 
     @Put(':id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @HttpCode(200)
     async updateProduct(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateProduct: UpdateProductDto) {
         const product = await this.productService.findOne(id);
@@ -69,6 +76,8 @@ export class ProductController{
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @HttpCode(204)
     async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {
 

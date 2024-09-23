@@ -1,57 +1,78 @@
-import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString, Matches } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class updateUserDto{
-    /**
-     * Nombre del usuario
-     * @example 'Juan'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The name of the user",
+        required: true,
+    })
+    @IsNotEmpty()
     @IsString()
+    @MaxLength(80)
+    @MinLength(3)
     name: string;
 
-    /**
-     * Debe ser un email válido
-     * @example 'ejemplo@mail.com'
-     */
+
+    @ApiProperty({
+        type: String,
+        description: "The email of the user",
+        required: true,
+    })
     @IsEmail()
     email: string;
 
 
-    /**
-     * La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)
-     * @example 'Ejemplo*1'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        required: true,
+    })
     @Matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&*])[A-Za-z\d=!@#$%^&*]{8,15}$/,
         {
             message:
-            "La contraseña debe contener al menos una minúscula, una mayúscula, un número, un caracter especial y tenga entre 8 a 15 caracteres"
+            "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)"
         }
     )
+    @IsNotEmpty()
+    @IsString()
     password: string;
 
-    /**
-     * El teléfono del usuario
-     * @example '15510256'
-     */
+
+    @ApiProperty({
+        type: String,
+        description: "The phone number of the user",
+        required: true,
+    })
+    @IsNotEmpty()
     @IsNumber()
     phone: number;
 
-    /**
-     * La ciudad donde vive el usuario
-     * @example 'López'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The city where the user lives",
+        required: false,
+    })
     @IsString()
+    @MaxLength(30)
+    @MinLength(5)
     @IsOptional()
     city?: string;
 
 
-    /**
-     * La dirección donde vive el usuario
-     * @example 'Rivadavia 1500'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The address where the user lives",
+        required: false,
+    })
+    @MaxLength(80)
+    @MinLength(3)
     @IsString()
-    address: string;
+    @IsOptional()
+    address?: string;
 
+    
     @IsBoolean()
     admin: boolean;
 }

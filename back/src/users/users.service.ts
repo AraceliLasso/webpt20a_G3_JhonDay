@@ -24,7 +24,7 @@ export class UsersService{
         const isPasswordMatchin = user && bcrypt.compare(loginUser.password, user.password) 
 
         if(!isPasswordMatchin){
-            throw new HttpException('Email o password incorrectos', HttpStatus.UNAUTHORIZED)
+            throw new HttpException('Incorrect email or password', HttpStatus.UNAUTHORIZED)
         }
         const token = await this.createToken(user);
         return {token}
@@ -50,6 +50,7 @@ export class UsersService{
         return users.map(user => {
             const userDto = new UserWithAdminDto();
             userDto.name = user.name;
+            userDto.age = user.age;
             userDto.email = user.email;
             userDto.address = user.address;
             userDto.phone = user.phone;
@@ -67,7 +68,7 @@ export class UsersService{
     async createUser(createUser: CreateUserDto): Promise<User>{
         // Verificar que las contraseñas coinciden antes de cualquier procesamiento
         if(createUser.password !== createUser.passwordConfirm){
-            throw new HttpException('La contraseña no coincide', 400)
+            throw new HttpException('Password does not match', 400)
         }
 
         // Crear una nueva instancia de usuario
@@ -89,7 +90,7 @@ export class UsersService{
     async updateUsers(id: string, userUpdate: updateUserDto): Promise <User>{
         const user = await this.usersRepository.findOne( { where: {id}});
         if(!user){
-            throw new Error(`El usuario con ${id} no fue encontrado`);
+            throw new Error(`User with ${id} was not found`);
         }
 
         if (userUpdate.password) {
@@ -106,7 +107,7 @@ export class UsersService{
     async removeUsers(id: string): Promise <string>{
         const user = await this.usersRepository.findOne({ where: {id}});
         if(!user){
-            throw new Error(`El usuario con ${id} no fue encontrado`);
+            throw new Error(`User with ${id} was not found`);
         }
         await this.usersRepository.remove(user);
         return id;

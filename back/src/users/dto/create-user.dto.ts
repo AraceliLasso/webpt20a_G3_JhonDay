@@ -1,13 +1,15 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 
 export class CreateUserDto {
     
 
-    /**
-     * Nombre del usuario
-     * @example 'Juan'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The name of the user",
+        required: true,
+    })
     @IsNotEmpty()
     @IsString()
     @MaxLength(80)
@@ -15,58 +17,64 @@ export class CreateUserDto {
     name: string;
 
 
-    /**
-     * Debe ser un email válido
-     * @example 'ejemplo@mail.com'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The email of the user",
+        required: true,
+    })
     @IsEmail()
     email: string;
 
-    /**
-     * La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)
-     * @example 'Ejemplo*1'
-     */
+
+    @ApiProperty({
+        type: String,
+        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        required: true,
+    })
     @Matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&*])[A-Za-z\d=!@#$%^&*]{8,15}$/,
         {
             message:
-            "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)"
+            "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)"
         }
     )
+    @IsNotEmpty()
     @IsString()
     password: string;
 
-    /**
-     * La edad del usuario
-     * @example '25'
-     */
-
+    @ApiProperty({
+        type: String,
+        description: "The age of the user",
+        required: true,
+    })
     @IsNumber()
-    @IsOptional()
     age:number
 
-    /**
-     * La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)
-     * @example 'Ejemplo*1'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        required: true,
+    })
     @IsNotEmpty()
     @IsString()
     passwordConfirm: string;
 
 
-    /**
-     * El teléfono del usuario
-     * @example '15510256'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The phone number of the user",
+        required: true,
+    })
     @IsNotEmpty()
     @IsNumber()
     phone: number;
 
 
-    /**
-     * La ciudad donde vive el usuario
-     * @example 'López'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The city where the user lives",
+        required: false,
+    })
     @IsString()
     @MaxLength(30)
     @MinLength(5)
@@ -74,10 +82,11 @@ export class CreateUserDto {
     city?: string;
 
 
-    /**
-     * La dirección donde vive el usuario
-     * @example 'Rivadavia 1500'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The address where the user lives",
+        required: false,
+    })
     @MaxLength(80)
     @MinLength(3)
     @IsString()

@@ -56,16 +56,17 @@ export class UsersController{
     @ApiOperation({ summary: 'Obtener usuario por ID' })
     @ApiResponse({ status: 200, description: 'Usuario obtenido', type: UserResponseDto})
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async getUser(@Param('id', new ParseUUIDPipe()) id: string): Promise<UserResponseDto>{
         const user = await this.usersService.getUserById(id)
         if(!IsUUID(4, { each: true})){
-            throw new HttpException('UUID inválido', HttpStatus.BAD_REQUEST)
+            throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST)
         }
         if(!user){
-            throw new HttpException('El usuario no fue encontrado', HttpStatus.NOT_FOUND)
+            throw new HttpException('User was not found', HttpStatus.NOT_FOUND)
         }
         return new UserResponseDto(user)
     }
@@ -87,13 +88,14 @@ export class UsersController{
     @ApiOperation({ summary: 'Eliminar un usuario por ID' })
     @ApiResponse({ status: 204, description: 'Usuario eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async deleteUsers(@Param('id') id: string): Promise<{id: string}>{
         const result = await this.usersService.removeUsers(id)
         if(!result){
-            throw new NotFoundException(`El usuario con ${id} no fue encontrado`);
+            throw new NotFoundException(`User with ${id} was not found`);
         }
 
         return {id}
