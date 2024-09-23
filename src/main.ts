@@ -12,7 +12,7 @@ async function bootstrap() {
     .setTitle("JhonDay")
     .setDescription("Este proyecto es una gestion de turnos de un negocio de servicios técnicos")
     .setVersion("1.0")
-    // .addBearerAuth() TODAVIA NO TENEMOS AUTH
+    .addBearerAuth() 
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig)

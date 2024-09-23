@@ -1,5 +1,6 @@
-import { User } from "src/users/users.entity";
+
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "../users/users.entity";
 
 
 export enum Statusenum {
