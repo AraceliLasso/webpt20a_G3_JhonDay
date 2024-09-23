@@ -1,44 +1,70 @@
-import { IsBoolean, IsNumber, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class UserWithAdminDto {
 
-    /**
-     * Nombre del usuario
-     * @example 'Juan'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The name of the user",
+        required: true,
+    })
+    @IsNotEmpty()
     @IsString()
+    @MaxLength(80)
+    @MinLength(3)
     name: string;
 
-    /**
-     * Debe ser un email válido
-     * @example 'ejemplo@mail.com'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The email of the user",
+        required: true,
+    })
+    @IsNotEmpty()
     @IsString()
     email: string;
 
-    /**
-     * El teléfono del usuario
-     * @example '15510256'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The age of the user",
+        required: true,
+    })
+    @IsNumber()
+    age:number
+
+    
+    @ApiProperty({
+        type: String,
+        description: "The phone number of the user",
+        required: true,
+    })
+    @IsNotEmpty()
     @IsNumber()
     phone: number;
 
 
-    /**
-     * La ciudad donde vive el usuario
-     * @example 'López'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The city where the user lives",
+        required: false,
+    })
     @IsString()
-    city: string;
+    @MaxLength(30)
+    @MinLength(5)
+    @IsOptional()
+    city?: string;
     
 
     
-    /**
-     * La dirección donde vive el usuario
-     * @example 'Rivadavia 1500'
-     */
+    @ApiProperty({
+        type: String,
+        description: "The address where the user lives",
+        required: false,
+    })
     @IsString()
-    address: string;
+    @MaxLength(30)
+    @MinLength(5)
+    @IsOptional()
+    address?: string;
     
     @IsBoolean()
     admin: boolean;

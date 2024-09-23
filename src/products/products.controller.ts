@@ -1,6 +1,6 @@
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./products.service";
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { IsUUID } from "class-validator";
@@ -8,6 +8,8 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
 import { CheckProductExistsResponse } from "./dto/check-product.dto";
 import { SearchDto } from "./dto/search-product.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "src/guard/roles.guard";
 
 @ApiTags("Products")
 @Controller("products")
@@ -51,6 +53,7 @@ export class ProductController {
 
 
     @Post()
+    @UseGuards(AuthGuard, RolesGuard)
     @ApiOperation({ summary: 'Crear un nuevo producto' })
     @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
     @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
@@ -64,6 +67,7 @@ export class ProductController {
         }
     }
     @Post('search')
+    @UseGuards(AuthGuard, RolesGuard)
     @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
     @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
     @ApiResponse({ status: 404, description: 'No se encontraron productos' })
@@ -72,6 +76,7 @@ export class ProductController {
     }
 
     @Put(':id')
+    @UseGuards(AuthGuard, RolesGuard)
     @ApiOperation({ summary: 'Actualizar un producto por ID' })
     @ApiResponse({ status: 200, description: 'Producto actualizado', type: ProductResponseDto })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })
@@ -88,6 +93,7 @@ export class ProductController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard, RolesGuard)
     @ApiOperation({ summary: 'Eliminar un producto por ID' })
     @ApiResponse({ status: 204, description: 'Producto eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })

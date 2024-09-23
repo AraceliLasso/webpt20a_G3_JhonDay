@@ -32,7 +32,3 @@ import { AppointmentModule } from './appointment/appointment.module';
 })
 
 export class AppModule {}
-
-
-
-

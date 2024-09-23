@@ -9,7 +9,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller('appointments')
 export class AppointmentController {
   constructor(
-    private readonly appointmentService: AppointmentService,
+    private readonly appointmentService: AppointmentService
   ) {}
 
   @Post()
