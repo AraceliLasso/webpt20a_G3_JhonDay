@@ -3,9 +3,10 @@ import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Category } from "./entities/category.entity";
-import { AuthGuard } from "src/guard/auth.guard";
-import { RolesGuard } from "src/guard/roles.guard";
-import { Roles } from "src/decorators/roles.decorator";
+import { AuthGuard } from "../guard/auth.guard";
+import { RolesGuard } from "../guard/roles.guard";
+import { Roles } from "../decorators/roles.decorator";
+
 
 @ApiTags('Categories')
 @Controller('categories')

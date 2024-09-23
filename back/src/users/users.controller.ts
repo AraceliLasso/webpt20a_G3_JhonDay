@@ -8,9 +8,10 @@ import { updateUserDto } from "./dto/update-user.dto";
 import { User } from "./users.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { AuthGuard } from "src/guard/auth.guard";
-import { RolesGuard } from "src/guard/roles.guard";
-import { Roles } from "src/decorators/roles.decorator";
+import { AuthGuard } from "../guard/auth.guard";
+import { RolesGuard } from "../guard/roles.guard";
+import { Roles } from "../decorators/roles.decorator";
+
 
 
 @ApiTags("Users")
