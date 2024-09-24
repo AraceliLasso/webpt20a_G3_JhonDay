@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configura CORS
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'; // Usa la URL del frontend aquí
+  const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
 
   app.enableCors({
     origin: frontendUrl, // Permite solicitudes solo desde esta URL
