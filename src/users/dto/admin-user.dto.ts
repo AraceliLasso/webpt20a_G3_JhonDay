@@ -24,7 +24,7 @@ export class UserWithAdminDto {
     email: string;
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: "The age of the user",
         required: true,
     })
@@ -33,7 +33,7 @@ export class UserWithAdminDto {
 
     
     @ApiProperty({
-        type: String,
+        type: Number,
         description: "The phone number of the user",
         required: true,
     })

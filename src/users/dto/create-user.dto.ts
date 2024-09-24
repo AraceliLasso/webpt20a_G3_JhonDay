@@ -44,6 +44,16 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
+        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        required: true,
+    })
+
+    @IsNotEmpty()
+    @IsString()
+    passwordConfirm: string;
+    
+    @ApiProperty({
+        type: Number,
         description: "The age of the user",
         required: true,
     })
@@ -51,17 +61,7 @@ export class CreateUserDto {
     age:number
 
     @ApiProperty({
-        type: String,
-        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
-        required: true,
-    })
-    @IsNotEmpty()
-    @IsString()
-    passwordConfirm: string;
-
-
-    @ApiProperty({
-        type: String,
+        type: Number,
         description: "The phone number of the user",
         required: true,
     })

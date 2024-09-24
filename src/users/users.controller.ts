@@ -11,18 +11,19 @@ import { CreateUserDto } from "./dto/create-user.dto";
 
 
 
+
 @ApiTags("Users")
 @Controller('users')
 export class UsersController{
     constructor(private readonly usersService: UsersService) {}
 
-    // @Post('login')
-    // @ApiOperation({ summary: 'Loguear un usuario' })
-    // @ApiResponse({ status: 201, description: 'Usuario logueado exitosamente', type: LoginUserDto })
-    // @ApiResponse({ status: 500, description: 'Error inesperado al loguear el usuario' })
-    // async signIn(@Body() credentials: LoginUserDto){
-    //     return this.usersService.login(credentials)
-    // }
+    @Post('login')
+    @ApiOperation({ summary: 'Loguear un usuario' })
+    @ApiResponse({ status: 201, description: 'Usuario logueado exitosamente', type: LoginUserDto })
+    @ApiResponse({ status: 500, description: 'Error inesperado al loguear el usuario' })
+    async signIn(@Body() credentials: LoginUserDto){
+        return this.usersService.login(credentials)
+    }
 
     @Post('register')
     @ApiOperation({ summary: 'Crear un nuevo usuario' })
@@ -38,6 +39,8 @@ export class UsersController{
     @ApiOperation({ summary: 'Obtener todos los usuarios' })
     @ApiResponse({ status: 200, description: 'Usuarios obtenidos', type: [UserWithAdminDto] })
     @HttpCode(HttpStatus.OK)
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles('admin')
     @ApiSecurity('bearer')
     @ApiQuery({ name: 'page', required: false, description: 'Número de página', example: 1 })
     @ApiQuery({ name: 'limit', required: false, description: 'Cantidad de resultados por página', example: 5 })
@@ -52,6 +55,8 @@ export class UsersController{
     @ApiOperation({ summary: 'Obtener usuario por ID' })
     @ApiResponse({ status: 200, description: 'Usuario obtenido', type: UserResponseDto})
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async getUser(@Param('id', new ParseUUIDPipe()) id: string): Promise<UserResponseDto>{
@@ -69,7 +74,7 @@ export class UsersController{
     @ApiOperation({ summary: 'Actualizar un usuario por ID' })
     @ApiResponse({ status: 200, description: 'Usuario actualizado', type: updateUserDto })
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    
+    // @UseGuards(AuthGuard)
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async updateUsers(@Param('id') id: string, @Body() updateUser: updateUserDto): Promise<User>{
@@ -82,6 +87,8 @@ export class UsersController{
     @ApiOperation({ summary: 'Eliminar un usuario por ID' })
     @ApiResponse({ status: 204, description: 'Usuario eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async deleteUsers(@Param('id') id: string): Promise<{id: string}>{

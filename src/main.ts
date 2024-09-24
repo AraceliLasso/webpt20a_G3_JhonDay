@@ -4,11 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cors from 'cors'; // Asegúrate de instalar y importar cors
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configura CORS
   const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
+  console.log({frontendUrl: process.env.FRONTEND_URL})
 
   app.enableCors({
     origin: frontendUrl, // Permite solicitudes solo desde esta URL
@@ -24,7 +26,7 @@ async function bootstrap() {
     .setTitle("JhonDay")
     .setDescription("Este proyecto es una gestión de turnos de un negocio de servicios técnicos")
     .setVersion("1.0")
-    // .addBearerAuth()
+    //.addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
