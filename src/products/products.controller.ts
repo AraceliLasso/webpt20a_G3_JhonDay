@@ -8,8 +8,6 @@ import { Product } from "./products.entity";
 import { CheckProductExistsResponse } from "./dto/check-product.dto";
 import { SearchDto } from "./dto/search-product.dto";
 import { AuthGuard } from "@nestjs/passport";
-import { RolesGuard } from "src/guard/roles.guard";
-import { Roles } from "src/decorators/roles.decorator";
 
 @ApiTags("Products")
 @Controller("products")
@@ -51,8 +49,6 @@ export class ProductController {
 
 
     @Post()
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Crear un nuevo producto' })
     @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
     @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
@@ -66,8 +62,6 @@ export class ProductController {
         }
     }
     @Post('search')
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
     @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
     @ApiResponse({ status: 404, description: 'No se encontraron productos' })
@@ -76,8 +70,6 @@ export class ProductController {
     }
 
     @Put(':id')
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Actualizar un producto por ID' })
     @ApiResponse({ status: 200, description: 'Producto actualizado', type: ProductResponseDto })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })
@@ -93,8 +85,6 @@ export class ProductController {
         return updatedProduct;
     }
     @Delete(':id')
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Eliminar un producto por ID' })
     @ApiResponse({ status: 204, description: 'Producto eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })

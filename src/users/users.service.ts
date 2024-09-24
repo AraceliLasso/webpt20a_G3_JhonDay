@@ -13,30 +13,29 @@ import { InjectRepository } from "@nestjs/typeorm";
 export class UsersService{
     constructor (
         @InjectRepository(User)
-        private readonly usersRepository: Repository<User>,
-        private readonly jwtService: JwtService
+        private readonly usersRepository: Repository<User>
     ){}
 
-    async login(loginUser: LoginUserDto): Promise<{token: string}>{
-        const user = await this.usersRepository.findOneBy({email: loginUser.email});
+    // async login(loginUser: LoginUserDto): Promise<{token: string}>{
+    //     const user = await this.usersRepository.findOneBy({email: loginUser.email});
 
 
-        const isPasswordMatchin = user && bcrypt.compare(loginUser.password, user.password) 
+    //     const isPasswordMatchin = user && bcrypt.compare(loginUser.password, user.password) 
 
-        if(!isPasswordMatchin){
-            throw new HttpException('Incorrect email or password', HttpStatus.UNAUTHORIZED)
-        }
-        const token = await this.createToken(user);
-        return {token}
-        }
-        private async createToken(user: User){
-            const payload = {
-                id: user.id,
-                email: user.email,
-                admin: user.admin
-            };
-            return this.jwtService.signAsync(payload)
-        }
+    //     if(!isPasswordMatchin){
+    //         throw new HttpException('Incorrect email or password', HttpStatus.UNAUTHORIZED)
+    //     }
+    //     const token = await this.createToken(user);
+    //     return {token}
+    //     }
+    //     private async createToken(user: User){
+    //         const payload = {
+    //             id: user.id,
+    //             email: user.email,
+    //             admin: user.admin
+    //         };
+    //         return this.jwtService.signAsync(payload)
+    //     }
     
 
     async getUsers(page: number, limit: number): Promise<UserWithAdminDto[]> {
