@@ -8,6 +8,9 @@ import { updateUserDto } from "./dto/update-user.dto";
 import { User } from "./users.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { Roles } from "src/decorators/roles.decorator";
+import { AuthGuard } from "src/guard/auth.guard";
+import { RolesGuard } from "src/guard/roles.guard";
 
 
 
@@ -31,7 +34,7 @@ export class UsersController{
     @ApiResponse({ status: 500, description: 'Error inesperado al crear el usuario' })
     async createUser(@Body() createUser: CreateUserDto, @Req() request){
         const user = await this.usersService.createUser(createUser)
-        return (`User ID '${user.id}'`)
+        return (`Usuario ID '${user.id}'`)
     }
 
 
@@ -39,8 +42,8 @@ export class UsersController{
     @ApiOperation({ summary: 'Obtener todos los usuarios' })
     @ApiResponse({ status: 200, description: 'Usuarios obtenidos', type: [UserWithAdminDto] })
     @HttpCode(HttpStatus.OK)
-    // @UseGuards(AuthGuard, RolesGuard)
-    // @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @ApiSecurity('bearer')
     @ApiQuery({ name: 'page', required: false, description: 'Número de página', example: 1 })
     @ApiQuery({ name: 'limit', required: false, description: 'Cantidad de resultados por página', example: 5 })
@@ -55,8 +58,8 @@ export class UsersController{
     @ApiOperation({ summary: 'Obtener usuario por ID' })
     @ApiResponse({ status: 200, description: 'Usuario obtenido', type: UserResponseDto})
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    // @UseGuards(AuthGuard, RolesGuard)
-    // @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async getUser(@Param('id', new ParseUUIDPipe()) id: string): Promise<UserResponseDto>{
@@ -65,7 +68,7 @@ export class UsersController{
             throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST)
         }
         if(!user){
-            throw new HttpException('User was not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND)
         }
         return new UserResponseDto(user)
     }
@@ -74,7 +77,7 @@ export class UsersController{
     @ApiOperation({ summary: 'Actualizar un usuario por ID' })
     @ApiResponse({ status: 200, description: 'Usuario actualizado', type: updateUserDto })
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    // @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async updateUsers(@Param('id') id: string, @Body() updateUser: updateUserDto): Promise<User>{
@@ -87,14 +90,14 @@ export class UsersController{
     @ApiOperation({ summary: 'Eliminar un usuario por ID' })
     @ApiResponse({ status: 204, description: 'Usuario eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-    // @UseGuards(AuthGuard, RolesGuard)
-    // @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @ApiSecurity('bearer')
     @HttpCode(HttpStatus.OK)
     async deleteUsers(@Param('id') id: string): Promise<{id: string}>{
         const result = await this.usersService.removeUsers(id)
         if(!result){
-            throw new NotFoundException(`User with ${id} was not found`);
+            throw new NotFoundException(`Usuario con ${id} no fue encontrado`);
         }
 
         return {id}

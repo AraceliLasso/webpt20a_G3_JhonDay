@@ -14,30 +14,30 @@ export class UsersService{
     constructor (
         @InjectRepository(User)
         private readonly usersRepository: Repository<User>,
-        //private readonly jwtService: JwtService
+        private readonly jwtService: JwtService
     ){}
 
-    async login(loginUser: LoginUserDto): Promise<User>{
+    async login(loginUser: LoginUserDto): Promise<{token: string}>{
         const user = await this.usersRepository.findOneBy({email: loginUser.email});
 
 
         const isPasswordMatchin = user && bcrypt.compare(loginUser.password, user.password) 
 
         if(!isPasswordMatchin){
-            throw new HttpException('Incorrect email or password', HttpStatus.UNAUTHORIZED)
+            throw new HttpException('Email o contraseña incorrecto', HttpStatus.UNAUTHORIZED)
         }
-        //const token = await this.createToken(user);
-        return user
+        const token = await this.createToken(user);
+        return {token}
         }
         
-        // private async createToken(user: User){
-        //     const payload = {
-        //         id: user.id,
-        //         email: user.email,
-        //         admin: user.admin
-        //     };
-        //     return this.jwtService.signAsync(payload)
-        // }
+        private async createToken(user: User){
+            const payload = {
+                id: user.id,
+                email: user.email,
+                admin: user.admin
+            };
+            return this.jwtService.signAsync(payload)
+        }
     
 
     async getUsers(page: number, limit: number): Promise<UserWithAdminDto[]> {
@@ -69,7 +69,7 @@ export class UsersService{
     async createUser(createUser: CreateUserDto): Promise<User>{
         // Verificar que las contraseñas coinciden antes de cualquier procesamiento
         if(createUser.password !== createUser.passwordConfirm){
-            throw new HttpException('Password does not match', 400)
+            throw new HttpException('Las contraseñas no coinciden', 400)
         }
 
         // Crear una nueva instancia de usuario
@@ -91,7 +91,7 @@ export class UsersService{
     async updateUsers(id: string, userUpdate: updateUserDto): Promise <User>{
         const user = await this.usersRepository.findOne( { where: {id}});
         if(!user){
-            throw new Error(`User with ${id} was not found`);
+            throw new Error(`Usuario con ${id} no fue encontrado`);
         }
 
         if (userUpdate.password) {
@@ -108,7 +108,7 @@ export class UsersService{
     async removeUsers(id: string): Promise <string>{
         const user = await this.usersRepository.findOne({ where: {id}});
         if(!user){
-            throw new Error(`User with ${id} was not found`);
+            throw new Error(`Usuario con ${id} no fue encontrado`);
         }
         await this.usersRepository.remove(user);
         return id;

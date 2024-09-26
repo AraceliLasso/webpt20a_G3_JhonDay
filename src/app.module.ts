@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @Module({
@@ -25,6 +26,7 @@ import { AppointmentModule } from './appointment/appointment.module';
       ProductsModule,
       CategoriesModule,
       AppointmentModule,
+      SharedModule,
     ],
   controllers: [AppController],
   providers: [AppService],

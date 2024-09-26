@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Param } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
 import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
 import { Category } from "./entities/category.entity";
+import { AuthGuard } from "src/guard/auth.guard";
+import { RolesGuard } from "src/guard/roles.guard";
+import { Roles } from "src/decorators/roles.decorator";
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -27,6 +30,9 @@ export class CategoriesController {
     @Post()
     @ApiOperation({ summary: 'Crear una nueva categoría' })
     @ApiResponse({ status: 201, description: 'Categoría creada', type: Category })
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
+    @ApiSecurity('bearer')
     async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
         return this.categoriesService.create(createCategoryDto);
     }
