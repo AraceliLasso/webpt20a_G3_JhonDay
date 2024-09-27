@@ -8,7 +8,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
-import { DatabaseSeederModule } from './config/database-seeder-module';
+import { SeederModule } from './seeds/seeds-module';
 import { SharedModule } from './shared/shared.module';
 
 
@@ -27,7 +27,7 @@ import { SharedModule } from './shared/shared.module';
       ProductsModule,
       CategoriesModule,
       AppointmentModule,
-      DatabaseSeederModule,
+      SeederModule,
       SharedModule,
     ],
   controllers: [AppController],

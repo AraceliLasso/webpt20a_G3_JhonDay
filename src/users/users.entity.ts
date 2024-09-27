@@ -1,7 +1,6 @@
-import { IsBoolean } from "class-validator";
 import { Appointment } from "src/appointment/appointment.entity";
 import { Entity, Column,PrimaryGeneratedColumn, OneToMany } from "typeorm";
-import { v4 as uuid} from 'uuid'
+
 
 @Entity({
     name: 'users'

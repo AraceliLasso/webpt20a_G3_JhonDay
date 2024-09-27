@@ -20,7 +20,7 @@ const PostgresDataSource = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     synchronize: true,
-    logging: true,
+    // logging: true,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     migrations:['./dist/migration/*{.ts,.js}'],
 }
