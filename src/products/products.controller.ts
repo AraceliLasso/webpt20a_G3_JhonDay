@@ -1,4 +1,4 @@
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./products.service";
 import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -7,7 +7,9 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
 import { CheckProductExistsResponse } from "./dto/check-product.dto";
 import { SearchDto } from "./dto/search-product.dto";
-import { AuthGuard } from "@nestjs/passport";
+import { Roles } from "src/decorators/roles.decorators";
+import { AuthGuard } from "src/guard/auth.guard";
+import { RolesGuard } from "src/guard/roles.guard";
 
 @ApiTags("Products")
 @Controller("products")
@@ -37,7 +39,7 @@ export class ProductController {
         }
         return product;
     }
-    
+
 
     @Get(':id/exists')
     @ApiOperation({ summary: 'Verificar si un producto existe' })
@@ -51,8 +53,35 @@ export class ProductController {
     @Post()
     @ApiOperation({ summary: 'Crear un nuevo producto' })
     @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
+    @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
+    @ApiSecurity('bearer')
     async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
-        return this.productService.create(createProductDto);
+        try {
+            const product = await this.productService.create(createProductDto);
+            return product; // Aquí puedes devolver el producto creado
+        } catch (error) {
+            // Manejo del error, puedes registrar el error o realizar otras acciones
+            console.error('Error al crear el producto:', error);
+            throw new InternalServerErrorException('Error inesperado al crear el producto');
+        }
+    }
+    @Post('search')
+    @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
+    @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
+    @ApiResponse({ status: 404, description: 'No se encontraron productos' })
+    async searchProducts(@Body() searchDto: SearchDto) {
+        try {
+            const products = await this.productService.searchProducts(searchDto);
+            if (!products || products.length === 0) {
+                throw new NotFoundException('No se encontraron productos');
+            }
+            return products;
+        } catch (error) {
+            console.error('Error al buscar productos:', error);
+            throw new InternalServerErrorException('Error inesperado al buscar productos');
+        }
     }
 
     @Put(":id") // Cambiado de PATCH a PUT
@@ -63,19 +92,25 @@ export class ProductController {
         @Param("id") id: string,
         @Body() updateProductDto: UpdateProductDto
     ): Promise<ProductResponseDto> {
-        return this.productService.update(id, updateProductDto);
+        try {
+            const updatedProduct = await this.productService.update(id, updateProductDto);
+            if (!updatedProduct) {
+                throw new NotFoundException('Producto no encontrado');
+            }
+            return updatedProduct;
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+            throw new InternalServerErrorException('Error inesperado al actualizar el producto');
+        }
     }
-    @Post('search')
-    @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
-    @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
-    @ApiResponse({ status: 404, description: 'No se encontraron productos' })
-    async searchProducts(@Body() searchDto: SearchDto) {
-        return this.productService.searchProducts(searchDto);
-    }
+
     @Delete(':id')
     @ApiOperation({ summary: 'Eliminar un producto por ID' })
     @ApiResponse({ status: 204, description: 'Producto eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
+    @ApiSecurity('bearer')
     async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {
         const product = await this.productService.findOne(id);
         if (!product) {
@@ -84,6 +119,6 @@ export class ProductController {
         await this.productService.remove(id);
         return; // Devuelve vacío para el código de estado 204
     }
-    
-    
+
+
 }

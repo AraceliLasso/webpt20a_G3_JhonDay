@@ -27,6 +27,7 @@ import { DatabaseSeederModule } from './config/database-seeder-module';
       CategoriesModule,
       AppointmentModule,
       DatabaseSeederModule,
+      SharedModule,
     ],
   controllers: [AppController],
   providers: [AppService],
