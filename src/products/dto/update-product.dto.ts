@@ -4,6 +4,13 @@ import { IsOptional, IsString, IsNumber } from "class-validator";
 export class UpdateProductDto {
   @ApiProperty({
     type: String,
+    description: "El identificador único del producto, asignado por la base de datos",
+    required: true,
+  })
+  id: string;
+  
+  @ApiProperty({
+    type: String,
     description: "El nuevo nombre del producto",
     required: false,
   })

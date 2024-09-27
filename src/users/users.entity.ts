@@ -24,8 +24,8 @@ export class User {
     password: string;
 
 
-    @Column({ type: 'int', nullable: true })
-    phone: number;
+    @Column({ nullable: true })
+    phone: string;
 
     @Column({ nullable: true })
     address: string;

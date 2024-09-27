@@ -2,10 +2,16 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export default class UserResponseDto {
-
     @ApiProperty({
         type: String,
-        description: "The name of the user",
+        description: "El identificador único del usuario, asignado por la base de datos",
+        required: true,
+    })
+    id: string;
+    
+    @ApiProperty({
+        type: String,
+        description: "El nombre del usuario",
         required: true,
     })
     @IsNotEmpty()
@@ -16,23 +22,21 @@ export default class UserResponseDto {
 
     @ApiProperty({
         type: String,
-        description: "The email of the user",
+        description: "El correo electrónico del usuario",
         required: true,
     })
     @IsEmail()
     email: string;
 
-
     @ApiProperty({
         type: String,
-        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        description: "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)",
         required: true,
     })
     @Matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&*])[A-Za-z\d=!@#$%^&*]{8,15}$/,
         {
-            message:
-            "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)"
+            message: "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)"
         }
     )
     @IsString()
@@ -40,26 +44,24 @@ export default class UserResponseDto {
 
     @ApiProperty({
         type: Number,
-        description: "The age of the user",
+        description: "La edad del usuario",
         required: true,
     })
     @IsNumber()
-    age:number
+    age: number;
 
     @ApiProperty({
         type: Number,
-        description: "The phone number of the user",
+        description: "El número de teléfono del usuario",
         required: true,
     })
     @IsNotEmpty()
-    @IsNumber()
-    phone: number;
-
-
+    @IsString()
+    phone: string;
 
     @ApiProperty({
         type: String,
-        description: "The city where the user lives",
+        description: "La ciudad donde vive el usuario",
         required: false,
     })
     @IsString()
@@ -68,10 +70,9 @@ export default class UserResponseDto {
     @IsOptional()
     city?: string;
 
-
     @ApiProperty({
         type: String,
-        description: "The address where the user lives",
+        description: "La dirección donde vive el usuario",
         required: false,
     })
     @MaxLength(80)
@@ -80,9 +81,8 @@ export default class UserResponseDto {
     @IsOptional()
     address?: string;
 
-
-    constructor(partial: Partial<UserResponseDto>){ //significa que puede venir otras propiedades o menos de las que declaro, por ejemplo password
-        const {name, age, email, address, phone, city} = partial;
+    constructor(partial: Partial<UserResponseDto>) { // Esto permite que el constructor acepte menos propiedades de las declaradas, por ejemplo, password
+        const { name, age, email, address, phone, city } = partial;
         this.name = name;
         this.age = age;
         this.email = email;

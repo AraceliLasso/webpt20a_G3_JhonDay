@@ -5,7 +5,7 @@ export class UserWithAdminDto {
 
     @ApiProperty({
         type: String,
-        description: "The name of the user",
+        description: "El nombre del usuario",
         required: true,
     })
     @IsNotEmpty()
@@ -16,7 +16,7 @@ export class UserWithAdminDto {
 
     @ApiProperty({
         type: String,
-        description: "The email of the user",
+        description: "El correo electrónico del usuario",
         required: true,
     })
     @IsNotEmpty()
@@ -25,26 +25,24 @@ export class UserWithAdminDto {
 
     @ApiProperty({
         type: Number,
-        description: "The age of the user",
+        description: "La edad del usuario",
         required: true,
     })
     @IsNumber()
-    age:number
+    age: number;
 
-    
     @ApiProperty({
         type: Number,
-        description: "The phone number of the user",
+        description: "El número de teléfono del usuario",
         required: true,
     })
     @IsNotEmpty()
-    @IsNumber()
-    phone: number;
-
+    @IsString()
+    phone: string;
 
     @ApiProperty({
         type: String,
-        description: "The city where the user lives",
+        description: "La ciudad donde vive el usuario",
         required: false,
     })
     @IsString()
@@ -52,12 +50,10 @@ export class UserWithAdminDto {
     @MinLength(5)
     @IsOptional()
     city?: string;
-    
 
-    
     @ApiProperty({
         type: String,
-        description: "The address where the user lives",
+        description: "La dirección donde vive el usuario",
         required: false,
     })
     @IsString()
@@ -66,6 +62,11 @@ export class UserWithAdminDto {
     @IsOptional()
     address?: string;
     
+    @ApiProperty({
+        type: Boolean,
+        description: "Indica si el usuario tiene permisos de administrador",
+        required: true,
+    })
     @IsBoolean()
     admin: boolean;
 }

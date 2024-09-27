@@ -1,22 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Statusenum } from '../appointment.entity';
 import { Appointment } from '../appointment.entity';
-import { User } from 'src/users/users.entity';
+import UserResponseDto from 'src/users/dto/response-user.dto';
 
 export class AppointmentResponseDto {
-  @ApiProperty({ description: 'Unique identifier for the appointment', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({ description: 'Identificador único para la cita', example: '123e4567-e89b-12d3-a456-426614174000' })
   id: string;
 
-  @ApiProperty({ description: 'Date and time of the appointment in ISO format', example: '2024-10-10T14:00:00Z' })
+  @ApiProperty({ description: 'Fecha y hora de la cita en formato ISO', example: '2024-10-10T14:00:00Z' })
   date: Date;
 
-  @ApiProperty({ description: 'Description of the appointment', example: 'Medical consultation' })
+  @ApiProperty({ description: 'Descripción de la cita', example: 'Consulta médica' })
   description: string;
 
-  @ApiProperty({ description: 'User associated with the appointment' })
-  user: User; // Cambié user por un objeto de tipo User
+  @ApiProperty({ description: 'Usuario asociado con la cita' })
+  user: UserResponseDto; // Cambié user por un objeto de tipo User
 
-  @ApiProperty({ description: 'Status of the appointment', enum: Statusenum })
+  @ApiProperty({ description: 'Estado de la cita', enum: Statusenum })
   status: Statusenum;
 
   constructor(appointment: Appointment) {

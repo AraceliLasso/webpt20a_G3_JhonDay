@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
-export class updateUserDto{
+export class updateUserDto {
     @ApiProperty({
         type: String,
-        description: "The name of the user",
+        description: "El nombre del usuario",
         required: true,
     })
     @IsNotEmpty()
@@ -13,26 +13,23 @@ export class updateUserDto{
     @MinLength(3)
     name: string;
 
-
     @ApiProperty({
         type: String,
-        description: "The email of the user",
+        description: "El correo electrónico del usuario",
         required: true,
     })
     @IsEmail()
     email: string;
 
-
     @ApiProperty({
         type: String,
-        description: "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)",
+        description: "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)",
         required: true,
     })
     @Matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&*])[A-Za-z\d=!@#$%^&*]{8,15}$/,
         {
-            message:
-            "The password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)"
+            message: "La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%^&*)"
         }
     )
     @IsNotEmpty()
@@ -41,24 +38,24 @@ export class updateUserDto{
 
     @ApiProperty({
         type: Number,
-        description: "The age of the user",
+        description: "La edad del usuario",
         required: true,
     })
     @IsNumber()
-    age:number
+    age: number;
 
     @ApiProperty({
         type: Number,
-        description: "The phone number of the user",
+        description: "El número de teléfono del usuario",
         required: true,
     })
     @IsNotEmpty()
-    @IsNumber()
-    phone: number;
+    @IsString()
+    phone: string;
 
     @ApiProperty({
         type: String,
-        description: "The city where the user lives",
+        description: "La ciudad donde vive el usuario",
         required: false,
     })
     @IsString()
@@ -67,10 +64,9 @@ export class updateUserDto{
     @IsOptional()
     city?: string;
 
-
     @ApiProperty({
         type: String,
-        description: "The address where the user lives",
+        description: "La dirección donde vive el usuario",
         required: false,
     })
     @MaxLength(80)
@@ -78,8 +74,4 @@ export class updateUserDto{
     @IsString()
     @IsOptional()
     address?: string;
-
-    
-    // @IsBoolean()
-    // admin: boolean;
 }
