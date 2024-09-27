@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { DatabaseSeederModule } from './config/database-seeder-module';
+import { SharedModule } from './shared/shared.module';
 
 
 @Module({
