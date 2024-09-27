@@ -4,16 +4,16 @@ import { IsOptional, IsString, IsNumber } from "class-validator";
 export class UpdateProductDto {
   @ApiProperty({
     type: String,
-    description: "The new name of the product",
+    description: "El nuevo nombre del producto",
     required: false,
   })
-  @IsOptional() // Indica que este campo es opcional
-  @IsString() // Valida que sea un string
-  name?: string; // Usa ? para indicar que es opcional
+  @IsOptional()
+  @IsString()
+  name?: string;
 
   @ApiProperty({
     type: String,
-    description: "The new description of the product",
+    description: "La nueva descripción del producto",
     required: false,
   })
   @IsOptional()
@@ -22,16 +22,16 @@ export class UpdateProductDto {
 
   @ApiProperty({
     type: Number,
-    description: "The new price of the product",
+    description: "El nuevo precio del producto",
     required: false,
   })
   @IsOptional()
-  @IsNumber()
+  @IsNumber() // Permitir decimales
   price?: number;
 
   @ApiProperty({
     type: String,
-    description: "The new image URL of the product",
+    description: "La nueva URL de la imagen del producto",
     required: false,
   })
   @IsOptional()

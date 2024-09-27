@@ -51,15 +51,19 @@ export class ProductController {
     @Post()
     @ApiOperation({ summary: 'Crear un nuevo producto' })
     @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
-    @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
-    async createProduct(@Body() createProductDto: CreateProductDto) {
-        try {
-            const product = await this.productService.create(createProductDto);
-            return new ProductResponseDto(product);
-        } catch (error) {
-            console.error("Unexpected error in createProduct:", error);
-            throw new InternalServerErrorException('Product could not be created');
-        }
+    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+        return this.productService.create(createProductDto);
+    }
+
+    @Put(":id") // Cambiado de PATCH a PUT
+    @ApiOperation({ summary: 'Actualizar un producto existente' })
+    @ApiResponse({ status: 200, description: 'Producto actualizado exitosamente', type: ProductResponseDto })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
+    async update(
+        @Param("id") id: string,
+        @Body() updateProductDto: UpdateProductDto
+    ): Promise<ProductResponseDto> {
+        return this.productService.update(id, updateProductDto);
     }
     @Post('search')
     @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
@@ -67,22 +71,6 @@ export class ProductController {
     @ApiResponse({ status: 404, description: 'No se encontraron productos' })
     async searchProducts(@Body() searchDto: SearchDto) {
         return this.productService.searchProducts(searchDto);
-    }
-
-    @Put(':id')
-    @ApiOperation({ summary: 'Actualizar un producto por ID' })
-    @ApiResponse({ status: 200, description: 'Producto actualizado', type: ProductResponseDto })
-    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
-    async updateProduct(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateProduct: UpdateProductDto) {
-        const product = await this.productService.findOne(id);
-        if (!product) {
-            throw new NotFoundException(`Product with id ${id} not found`)
-        }
-        const updatedProduct = await this.productService.update(
-            id,
-            updateProduct as UpdateProductDto
-        );
-        return updatedProduct;
     }
     @Delete(':id')
     @ApiOperation({ summary: 'Eliminar un producto por ID' })

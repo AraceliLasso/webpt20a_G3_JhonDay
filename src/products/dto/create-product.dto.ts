@@ -1,20 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator"
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class CreateProductDto {
   @ApiProperty({
     type: String,
-    description: "The name of the product",
+    description: "El nombre del producto",
     required: true,
   })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-
   @ApiProperty({
     type: String,
-    description: "The description of the product",
+    description: "La descripción del producto",
     required: true,
   })
   @IsString()
@@ -23,21 +22,22 @@ export class CreateProductDto {
 
   @ApiProperty({
     type: Number,
-    description: "The price of the product",
+    description: "El precio del producto",
     required: true,
   })
-  @IsInt()
+  @IsNumber() // Permitir decimales
   @IsNotEmpty()
   price: number;
 
   @ApiProperty({
     type: String,
-    description: "The image URL of the product",
+    description: "La URL de la imagen del producto",
     required: true,
   })
   @IsString()
   @IsNotEmpty()
   image: string;
+
   @ApiProperty({
     type: String,
     description: "ID de la categoría del producto",

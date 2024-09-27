@@ -2,18 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cors from 'cors'; // Asegúrate de instalar y importar cors
+import { DatabaseSeederService } from './config/database-seeder.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configura CORS
-  const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
+  const frontendUrl = process.env.FRONTEND_URL;
 
   app.enableCors({
-    origin: frontendUrl, // Permite solicitudes solo desde esta URL
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
-    credentials: true, // Permite el uso de cookies y encabezados de autenticación
+    origin: frontendUrl,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
   });
 
   //termina configuracion de cors
@@ -29,6 +29,12 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup("api", app, document);
+
+  //*Configuracion de mockeo empieza
+  // Ejecutar el seeder al iniciar la aplicación
+  const databaseSeederService = app.get(DatabaseSeederService);
+  await databaseSeederService.seed(); // Llama al método seed
+    //*Configuracion de mockeo termina
 
   await app.listen(3010);
 }

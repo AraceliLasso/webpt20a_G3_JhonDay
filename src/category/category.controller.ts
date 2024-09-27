@@ -3,6 +3,7 @@ import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Category } from "./entities/category.entity";
+import { CategoryResponseDto } from "./dto/response-category.dto";
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -26,10 +27,10 @@ export class CategoriesController {
     }
     @Post()
     @ApiOperation({ summary: 'Crear una nueva categoría' })
-    @ApiResponse({ status: 201, description: 'Categoría creada', type: Category })
-    async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
-        return this.categoriesService.create(createCategoryDto);
+    @ApiResponse({ status: 201, description: 'Categoría creada', type: CategoryResponseDto })
+    async create(@Body() createCategoryDto: CreateCategoryDto): Promise<CategoryResponseDto> {
+        const newCategory = await this.categoriesService.create(createCategoryDto);
+        return new CategoryResponseDto(newCategory.id, newCategory.name);
     }
-
 
 }

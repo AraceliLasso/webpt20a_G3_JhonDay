@@ -1,22 +1,22 @@
-import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class SearchDto {
-    @ApiProperty({
-        description: 'Name of the product to search for',
-        required: false,
-        type: String,
-    })
-    @IsOptional()
-    @IsString()
-    productName?: string;
+  @ApiProperty({
+    description: 'Nombre del producto a buscar',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  productName?: string;
 
-    @ApiProperty({
-        description: 'Name of the category to search within',
-        required: false,
-        type: String,
-    })
-    @IsOptional()
-    @IsString()
-    categoryName?: string;
+  @ApiProperty({
+    description: 'Nombre de la categoría para buscar',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  categoryName?: string;
 }
