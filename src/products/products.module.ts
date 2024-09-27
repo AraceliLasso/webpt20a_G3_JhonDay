@@ -6,6 +6,7 @@ import { ProductController } from "./products.controller";
 import { Product } from "./products.entity";
 import { CategoriesModule } from "src/category/category.module";
 
+
 @Module({
     imports: [
         TypeOrmModule.forFeature([Product, Appointment]), // Importa el repositorio de Product

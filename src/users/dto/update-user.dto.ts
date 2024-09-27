@@ -39,9 +39,16 @@ export class updateUserDto{
     @IsString()
     password: string;
 
+    @ApiProperty({
+        type: Number,
+        description: "The age of the user",
+        required: true,
+    })
+    @IsNumber()
+    age:number
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: "The phone number of the user",
         required: true,
     })
@@ -73,6 +80,6 @@ export class updateUserDto{
     address?: string;
 
     
-    @IsBoolean()
-    admin: boolean;
+    // @IsBoolean()
+    // admin: boolean;
 }

@@ -1,4 +1,4 @@
-import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./products.service";
 import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -21,6 +21,8 @@ export class ProductController {
     @Get()
     @ApiOperation({ summary: 'Obtener todos los productos' })
     @ApiResponse({ status: 200, description: 'Productos obtenidos', type: [Product] })
+    @ApiQuery({ name: 'page', required: false, description: 'Número de página', example: 1 })
+    @ApiQuery({ name: 'limit', required: false, description: 'Cantidad de resultados por página', example: 5 })
     async getProducts(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -35,7 +37,7 @@ export class ProductController {
     async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
         const product = await this.productService.findOne(id);
         if (!product) {
-            throw new NotFoundException("Product not found");
+            throw new NotFoundException("Producto no encontrado");
         }
         return product;
     }
@@ -88,6 +90,9 @@ export class ProductController {
     @ApiOperation({ summary: 'Actualizar un producto existente' })
     @ApiResponse({ status: 200, description: 'Producto actualizado exitosamente', type: ProductResponseDto })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
+    @ApiSecurity('bearer')
     async update(
         @Param("id") id: string,
         @Body() updateProductDto: UpdateProductDto
@@ -114,7 +119,7 @@ export class ProductController {
     async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {
         const product = await this.productService.findOne(id);
         if (!product) {
-            throw new NotFoundException(`Product with id ${id} not found`);
+            throw new NotFoundException(`Producto con id ${id} no fue encontrado`);
         }
         await this.productService.remove(id);
         return; // Devuelve vacío para el código de estado 204
