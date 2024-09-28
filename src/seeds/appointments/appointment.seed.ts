@@ -72,5 +72,13 @@ export const seedAppointments = async (dataSource: DataSource) => {
         },
     ];
 
-    await appointmentRepository.save(appointments);
+    for (const appointment of appointments) {
+        const existingAppointment = await appointmentRepository.findOne({
+            where: { id: appointment.id },
+        });
+        
+        if (!existingAppointment) {
+            await appointmentRepository.save(appointment);
+        }
+    }
 };

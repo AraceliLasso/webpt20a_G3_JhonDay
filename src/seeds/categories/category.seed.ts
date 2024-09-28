@@ -1,6 +1,5 @@
-
 import { DataSource } from 'typeorm';
-import { Category } from 'src/category/entities/category.entity';
+import { Category } from 'src/category/category.entity';
 
 export const seedCategories = async (dataSource: DataSource) => {
     const categoryRepository = dataSource.getRepository(Category);
@@ -34,7 +33,15 @@ export const seedCategories = async (dataSource: DataSource) => {
             id: "44a9cdd9-ec99-4f06-baf1-5a013ddeb61c",
             name: "Consultoría Escolar",
         }
-    ]
+    ];
 
-    await categoryRepository.save(categories);
+    for (const category of categories) {
+        const existingCategory = await categoryRepository.findOne({
+            where: { id: category.id },
+        });
+        
+        if (!existingCategory) {
+            await categoryRepository.save(category);
+        }
+    }
 };

@@ -70,7 +70,7 @@ export class ProductController {
         }
     }
     @Post('search')
-    @ApiOperation({ summary: 'Buscar productos por nombre o categoría' })
+    @ApiOperation({ summary: 'Buscar productos por nombre, categoría, precio o descripción' })
     @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })
     @ApiResponse({ status: 404, description: 'No se encontraron productos' })
     async searchProducts(@Body() searchDto: SearchDto) {
@@ -86,7 +86,7 @@ export class ProductController {
         }
     }
 
-    @Put(":id") // Cambiado de PATCH a PUT
+    @Put(":id")
     @ApiOperation({ summary: 'Actualizar un producto existente' })
     @ApiResponse({ status: 200, description: 'Producto actualizado exitosamente', type: ProductResponseDto })
     @ApiResponse({ status: 404, description: 'Producto no encontrado' })

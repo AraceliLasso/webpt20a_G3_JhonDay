@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
 import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
-import { Category } from "./entities/category.entity";
+import { Category } from "./category.entity";
 import { CategoryResponseDto } from "./dto/response-category.dto";
 import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";

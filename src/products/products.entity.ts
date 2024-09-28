@@ -1,5 +1,5 @@
 import { Appointment } from "src/appointment/appointment.entity";
-import { Category } from "src/category/entities/category.entity";
+import { Category } from "src/category/category.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
 @Entity({

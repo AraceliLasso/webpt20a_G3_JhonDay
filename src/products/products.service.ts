@@ -1,14 +1,15 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./products.entity";
-import { Repository } from "typeorm";
+import { Between, Like, Repository } from "typeorm";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Category } from "src/category/entities/category.entity";
+import { Category } from "src/category/category.entity";
 import { SearchDto } from "./dto/search-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { CategoriesService } from "src/category/categories.services";
 import { CategoryResponseDto } from "src/category/dto/response-category.dto";
+import Fuse from 'fuse.js';
 
 
 @Injectable()
@@ -21,7 +22,7 @@ export class ProductService {
         private readonly categoryRepository: Repository<Category>, // Repositorio para Category
 
         private readonly categoriesService: CategoriesService, // Servicio para manejar categorías
-    ) {}
+    ) { }
 
     async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
         const product = new Product();
@@ -46,43 +47,43 @@ export class ProductService {
         });
     }
 
-   async findOne(id: string): Promise<ProductResponseDto> {
-    const product = await this.productRepository.findOne({
-        where: { id },
-        relations: ['category'], // Carga la relación de categoría
-    });
-    if (!product) {
-        throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+    async findOne(id: string): Promise<ProductResponseDto> {
+        const product = await this.productRepository.findOne({
+            where: { id },
+            relations: ['category'], // Carga la relación de categoría
+        });
+        if (!product) {
+            throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+        }
+
+        // Crea el DTO de categoría
+        const categoryDto = new CategoryResponseDto(product.category.id, product.category.name);
+
+        // Devuelve el DTO de producto con el DTO de categoría
+        return new ProductResponseDto(product, categoryDto);
     }
 
-    // Crea el DTO de categoría
-    const categoryDto = new CategoryResponseDto(product.category.id, product.category.name);
+    async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
+        const product = await this.productRepository.findOne({
+            where: { id }, // Usar un objeto con la propiedad `where`
+            relations: ['category'], // Cargar la relación de categoría
+        });
 
-    // Devuelve el DTO de producto con el DTO de categoría
-    return new ProductResponseDto(product, categoryDto);
-}
+        if (!product) {
+            throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+        }
 
-async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
-    const product = await this.productRepository.findOne({
-        where: { id }, // Usar un objeto con la propiedad `where`
-        relations: ['category'], // Cargar la relación de categoría
-    });
+        // Actualiza los campos del producto
+        if (updateProductDto.name) product.name = updateProductDto.name;
+        if (updateProductDto.description) product.description = updateProductDto.description;
+        if (updateProductDto.price) product.price = updateProductDto.price;
+        if (updateProductDto.image) product.image = updateProductDto.image;
 
-    if (!product) {
-        throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+        const updatedProduct = await this.productRepository.save(product);
+        const categoryDto = new CategoryResponseDto(updatedProduct.category.id, updatedProduct.category.name);
+
+        return new ProductResponseDto(updatedProduct, categoryDto);
     }
-
-    // Actualiza los campos del producto
-    if (updateProductDto.name) product.name = updateProductDto.name;
-    if (updateProductDto.description) product.description = updateProductDto.description;
-    if (updateProductDto.price) product.price = updateProductDto.price;
-    if (updateProductDto.image) product.image = updateProductDto.image;
-
-    const updatedProduct = await this.productRepository.save(product);
-    const categoryDto = new CategoryResponseDto(updatedProduct.category.id, updatedProduct.category.name);
-
-    return new ProductResponseDto(updatedProduct, categoryDto);
-}
     async remove(id: string): Promise<{ id: string }> {
         await this.productRepository.delete(id);
         return { id };
@@ -102,30 +103,61 @@ async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductRes
     }
 
     //* implementacion para demo 1/2, logica busqueda de barra
+
     async searchProducts(searchDto: SearchDto): Promise<Product[]> {
-        const { productName, categoryName } = searchDto;
+        const { productName, categoryName, price, description } = searchDto;
 
         let products: Product[] = [];
 
-        if (categoryName) {
-            // Busca la categoría por nombre
-            const category = await this.categoryRepository.findOne({ where: { name: categoryName } });
-            if (category) {
-                // Si se encuentra la categoría, busca productos de esa categoría
-                products = await this.productRepository.find({
-                    where: { category: { id: category.id } },
-                });
+        try {
+            if (categoryName) {
+                const category = await this.categoryRepository.findOne({ where: { name: categoryName } });
+                if (category) {
+                    const categoryProducts = await this.productRepository.find({
+                        where: { category: { id: category.id } },
+                    });
+                    products = [...products, ...categoryProducts]; // Agregar productos de la categoría
+                }
             }
-        }
 
-        if (productName) {
-            // Busca productos que coincidan con el nombre del producto
-            const productResults = await this.productRepository.find({
-                where: { name: productName },
-            });
-            products = [...products, ...productResults]; // Agrega los productos encontrados
-        }
+            if (productName) {
+                const productResults = await this.productRepository.find({
+                    where: { name: Like(`%${productName}%`) }, // Búsqueda difusa por nombre
+                });
+                products = [...products, ...productResults]; // Agregar productos encontrados
+            }
 
-        return products; // Retorna todos los productos encontrados
+            if (typeof price === 'number') {
+                // Definir un rango de búsqueda alrededor del precio ingresado
+                const priceLowerBound = price - 10; // Ajusta este valor según tus necesidades
+                const priceUpperBound = price + 10;
+
+                const priceResults = await this.productRepository.find({
+                    where: {
+                        price: Between(priceLowerBound, priceUpperBound), // Búsqueda por precio cercano
+                    },
+                });
+                products = [...products, ...priceResults]; // Agregar productos encontrados
+            }
+
+            // Buscar productos por descripción
+            if (description) {
+                const descriptionResults = await this.productRepository.find({
+                    where: { description: Like(`%${description}%`) }, // Búsqueda por descripción
+                });
+                products = [...products, ...descriptionResults]; // Agregar productos encontrados
+            }
+
+            // Eliminar duplicados si es necesario
+            products = Array.from(new Set(products.map(product => product.id))) // Mapa por ID para eliminar duplicados
+                .map(id => products.find(product => product.id === id));
+
+            return products;
+        } catch (error) {
+            console.error('Error en la búsqueda de productos:', error);
+            throw new InternalServerErrorException('Error inesperado al buscar productos');
+        }
     }
+
 }
+

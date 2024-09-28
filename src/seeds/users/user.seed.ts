@@ -85,5 +85,15 @@ export const seedUsers = async (dataSource: DataSource) => {
         }
     ];
 
-    await usersRepository.save(users);
+    for (const user of users) {
+        const existingUser = await usersRepository.findOne({
+            where: { email: user.email } // Verifica si el usuario ya existe por su correo electrónico
+        });
+
+        if (!existingUser) {
+            await usersRepository.save(user);
+        } else {
+            console.log(`El usuario "${user.name}" ya existe y no se insertará.`);
+        }
+    }
 };

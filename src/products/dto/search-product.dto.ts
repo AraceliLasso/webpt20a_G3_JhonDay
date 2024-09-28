@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class SearchDto {
   @ApiProperty({
@@ -19,4 +19,23 @@ export class SearchDto {
   @IsOptional()
   @IsString()
   categoryName?: string;
+
+  @ApiProperty({
+    description: 'Precio para buscar productos más cercanos a este valor',
+    required: false,
+    type: Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @ApiProperty({
+    description: 'Descripción del producto a buscar',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
 }
+

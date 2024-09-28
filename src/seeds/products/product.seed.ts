@@ -78,6 +78,13 @@ export const seedProducts = async (dataSource: DataSource) => {
             categoryId: "c079e65a-7e1b-4ac2-ac4e-9325628f34c2", 
         },
     ];
-  
-    await productRepository.save(products);
+
+    for (const product of products) {
+        const existingProduct = await productRepository.findOneBy({ id: product.id });
+        if (!existingProduct) {
+            await productRepository.save(product);
+        }
+    }
 };
+
+
