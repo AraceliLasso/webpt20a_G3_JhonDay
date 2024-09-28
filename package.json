@@ -40,6 +40,7 @@
         "pg": "^8.13.0",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1",
+        "stripe": "^16.12.0",
         "swagger-ui-express": "^5.0.1",
         "typeorm": "^0.3.20",
         "uuid": "^10.0.0"
@@ -53,6 +54,7 @@
         "@types/jest": "^29.5.13",
         "@types/node": "^20.16.5",
         "@types/passport-jwt": "^4.0.1",
+        "@types/stripe": "^8.0.417",
         "@types/supertest": "^6.0.2",
         "@types/uuid": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^8.0.0",

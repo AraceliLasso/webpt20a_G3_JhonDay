@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { SharedModule } from './shared/shared.module';
+import { StripeModule } from './stripe/stripe.module';
 
 
 @Module({
@@ -27,6 +28,7 @@ import { SharedModule } from './shared/shared.module';
       CategoriesModule,
       AppointmentModule,
       SharedModule,
+      StripeModule
     ],
   controllers: [AppController],
   providers: [AppService],
