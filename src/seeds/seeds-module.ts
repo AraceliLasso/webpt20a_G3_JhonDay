@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SeederService } from './seeds-service';
-import { Category } from '../category/entities/category.entity';
-import { Product } from '../products/products.entity';
-import { User } from 'src/users/users.entity';
+import { DataSource } from 'typeorm';
+import { seedAppointments } from './appointments/appointment.seed';
+import { seedUsers } from './users/user.seed';
+import { seedProducts } from './products/product.seed';
+import { seedCategories } from './categories/category.seed';
+@Module({})
+export class SeedModule {
+    constructor(private dataSource: DataSource) {}
 
-@Module({
-  imports: [TypeOrmModule.forFeature([Category, Product, User])],
-  providers: [SeederService],
-  exports: [SeederService], // Exporta el servicio si lo necesitas en otros módulos
-})
-export class SeederModule {}
+    async onModuleInit() {
+        await seedCategories(this.dataSource);
+        await seedProducts(this.dataSource); 
+        await seedUsers(this.dataSource); 
+        await seedAppointments(this.dataSource); 
+    }
+}

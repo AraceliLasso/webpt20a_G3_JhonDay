@@ -8,8 +8,8 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
-import { SeederModule } from './seeds/seeds-module';
 import { SharedModule } from './shared/shared.module';
+import { SeedModule } from './seeds/seeds-module';
 
 
 @Module({
@@ -27,7 +27,7 @@ import { SharedModule } from './shared/shared.module';
       ProductsModule,
       CategoriesModule,
       AppointmentModule,
-      SeederModule,
+      SeedModule,
       SharedModule,
     ],
   controllers: [AppController],
