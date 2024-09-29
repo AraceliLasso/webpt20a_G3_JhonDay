@@ -11,6 +11,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { SharedModule } from './shared/shared.module';
 import { SeedModule } from './seeds/seeds-module';
 import { StripeModule } from './stripe/stripe.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 
 @Module({
@@ -30,7 +31,8 @@ import { StripeModule } from './stripe/stripe.module';
       AppointmentModule,
       SeedModule,
       SharedModule,
-      StripeModule
+      StripeModule,
+      FileUploadModule
     ],
   controllers: [AppController],
   providers: [AppService],

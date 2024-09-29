@@ -7,7 +7,7 @@ import { Category } from "./category.entity";
 import { CategoryResponseDto } from "./dto/response-category.dto";
 import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
-import { Roles } from "src/decorators/roles.decorators";
+import { Roles } from "src/decorators/roles.decorator";
 
 
 @ApiTags('Categories')

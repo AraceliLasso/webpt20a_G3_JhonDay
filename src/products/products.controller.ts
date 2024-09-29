@@ -7,9 +7,9 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./products.entity";
 import { CheckProductExistsResponse } from "./dto/check-product.dto";
 import { SearchDto } from "./dto/search-product.dto";
-import { Roles } from "src/decorators/roles.decorators";
 import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
+import { Roles } from "src/decorators/roles.decorator";
 
 @ApiTags("Products")
 @Controller("products")
