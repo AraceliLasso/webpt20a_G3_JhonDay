@@ -1,7 +1,7 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./products.entity";
-import { Between, Like, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { Category } from "src/category/category.entity";
@@ -9,7 +9,6 @@ import { SearchDto } from "./dto/search-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { CategoriesService } from "src/category/categories.services";
 import { CategoryResponseDto } from "src/category/dto/response-category.dto";
-import Fuse from 'fuse.js';
 
 
 @Injectable()
