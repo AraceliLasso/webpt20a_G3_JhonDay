@@ -104,60 +104,58 @@ export class ProductService {
 
     //* implementacion para demo 1/2, logica busqueda de barra
 
-    async searchProducts(searchDto: SearchDto): Promise<Product[]> {
+    
+      async searchProducts(searchDto: SearchDto): Promise<Product[]> {
         const { productName, categoryName, price, description } = searchDto;
-
-        let products: Product[] = [];
-
-        try {
-            if (categoryName) {
-                const category = await this.categoryRepository.findOne({ where: { name: categoryName } });
-                if (category) {
-                    const categoryProducts = await this.productRepository.find({
-                        where: { category: { id: category.id } },
-                    });
-                    products = [...products, ...categoryProducts]; // Agregar productos de la categoría
-                }
-            }
-
-            if (productName) {
-                const productResults = await this.productRepository.find({
-                    where: { name: Like(`%${productName}%`) }, // Búsqueda difusa por nombre
-                });
-                products = [...products, ...productResults]; // Agregar productos encontrados
-            }
-
-            if (typeof price === 'number') {
-                // Definir un rango de búsqueda alrededor del precio ingresado
-                const priceLowerBound = price - 10; // Ajusta este valor según tus necesidades
-                const priceUpperBound = price + 10;
-
-                const priceResults = await this.productRepository.find({
-                    where: {
-                        price: Between(priceLowerBound, priceUpperBound), // Búsqueda por precio cercano
-                    },
-                });
-                products = [...products, ...priceResults]; // Agregar productos encontrados
-            }
-
-            // Buscar productos por descripción
-            if (description) {
-                const descriptionResults = await this.productRepository.find({
-                    where: { description: Like(`%${description}%`) }, // Búsqueda por descripción
-                });
-                products = [...products, ...descriptionResults]; // Agregar productos encontrados
-            }
-
-            // Eliminar duplicados si es necesario
-            products = Array.from(new Set(products.map(product => product.id))) // Mapa por ID para eliminar duplicados
-                .map(id => products.find(product => product.id === id));
-
-            return products;
-        } catch (error) {
-            console.error('Error en la búsqueda de productos:', error);
-            throw new InternalServerErrorException('Error inesperado al buscar productos');
+    
+        // Crear un array de promesas
+        const queries = [];
+    
+        if (productName) {
+          queries.push(
+            this.productRepository.createQueryBuilder('product')
+              .where('product.name ILIKE :name', { name: `%${productName}%` })
+              .getMany(),
+          );
         }
+    
+        if (categoryName) {
+          queries.push(
+            this.productRepository.createQueryBuilder('product')
+              .innerJoinAndSelect('product.category', 'category')
+              .where('category.name ILIKE :categoryName', { categoryName: `%${categoryName}%` })
+              .getMany(),
+          );
+        }
+    
+        if (description) {
+          queries.push(
+            this.productRepository.createQueryBuilder('product')
+              .where('product.description ILIKE :description', { description: `%${description}%` })
+              .getMany(),
+          );
+        }
+    
+        if (typeof price === 'number') {
+          const priceLowerBound = price - 10; // Ajusta este valor según tus necesidades
+          const priceUpperBound = price + 10;
+          
+          queries.push(
+            this.productRepository.createQueryBuilder('product')
+              .where('product.price BETWEEN :lower AND :upper', { lower: priceLowerBound, upper: priceUpperBound })
+              .getMany(),
+          );
+        }
+    
+        // Ejecutar todas las consultas y combinarlas
+        const results = await Promise.all(queries);
+        const uniqueProducts = Array.from(new Set(results.flat().map(product => product.id)))
+          .map(id => results.flat().find(product => product.id === id));
+    
+        return uniqueProducts;
+      }
     }
+    
 
-}
+
 

@@ -86,6 +86,7 @@ export class ProductController {
         }
     }
 
+
     @Put(":id")
     @ApiOperation({ summary: 'Actualizar un producto existente' })
     @ApiResponse({ status: 200, description: 'Producto actualizado exitosamente', type: ProductResponseDto })
