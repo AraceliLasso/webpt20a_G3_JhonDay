@@ -10,6 +10,7 @@ import { CategoriesModule } from './category/category.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { SharedModule } from './shared/shared.module';
 import { SeedModule } from './seeds/seeds-module';
+import { StripeModule } from './stripe/stripe.module';
 
 
 @Module({
@@ -29,6 +30,7 @@ import { SeedModule } from './seeds/seeds-module';
       AppointmentModule,
       SeedModule,
       SharedModule,
+      StripeModule
     ],
   controllers: [AppController],
   providers: [AppService],
