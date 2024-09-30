@@ -37,6 +37,14 @@ export class UsersController{
         return (`Usuario ID '${user.id}'`)
     }
 
+    @Get('auth0')
+    getAuth0(@Req() request){
+        console.log(JSON.stringify(request.oidc));
+        console.log(JSON.stringify(request.oidc.idToken)); 
+        console.log('OIDC User:', JSON.stringify(request.oidc.user));
+    return request.oidc.user ? JSON.stringify(request.oidc.user) : 'User not authenticated';
+        //return JSON.stringify(request.oidc.user)
+    }
 
     @Get()  
     @ApiOperation({ summary: 'Obtener todos los usuarios' })

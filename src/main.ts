@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { auth } from 'express-openid-connect';
+import { auth0Config } from './config/auth0-config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +19,12 @@ async function bootstrap() {
   });
 
   //termina configuracion de cors
+
+  
+  // Configuración de Auth0
+  app.use(
+    auth(auth0Config)
+  )
 
   app.useGlobalPipes(new ValidationPipe());
 
