@@ -1,6 +1,6 @@
 import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./products.service";
-import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
@@ -85,8 +85,7 @@ export class ProductController {
             throw new InternalServerErrorException('Error inesperado al buscar productos');
         }
     }
-
-
+    
     @Put(":id")
     @ApiOperation({ summary: 'Actualizar un producto existente' })
     @ApiResponse({ status: 200, description: 'Producto actualizado exitosamente', type: ProductResponseDto })
