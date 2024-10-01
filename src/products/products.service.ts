@@ -4,11 +4,11 @@ import { Product } from "./products.entity";
 import { Repository } from "typeorm";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Category } from "src/category/category.entity";
 import { SearchDto } from "./dto/search-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { CategoriesService } from "src/category/categories.services";
 import { CategoryResponseDto } from "src/category/dto/response-category.dto";
+
 
 
 @Injectable()
@@ -17,8 +17,6 @@ export class ProductService {
         @InjectRepository(Product)
         private readonly productRepository: Repository<Product>, // Repositorio para Product
 
-        @InjectRepository(Category)
-        private readonly categoryRepository: Repository<Category>, // Repositorio para Category
 
         private readonly categoriesService: CategoriesService, // Servicio para manejar categorías
     ) { }

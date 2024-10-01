@@ -56,8 +56,8 @@ export default class UserResponseDto {
         required: true,
     })
     @IsNotEmpty()
-    @IsString()
-    phone: string;
+    @IsNumber()
+    phone: number;
 
     @ApiProperty({
         type: String,
