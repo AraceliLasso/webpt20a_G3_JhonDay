@@ -8,26 +8,42 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { MailService } from "src/notifications/mail.service";
 
 @Injectable()
 export class UsersService{
     constructor (
         @InjectRepository(User)
         private readonly usersRepository: Repository<User>,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService, 
+        private readonly mailService: MailService
     ){}
 
-    async login(loginUser: LoginUserDto): Promise<{token: string}>{
-        const user = await this.usersRepository.findOneBy({email: loginUser.email});
+    async login(loginUser: LoginUserDto): Promise<{user: Partial<User>,token: string}>{
+        const user = await this.usersRepository.findOneBy({email: loginUser.email.toLowerCase()});
+        console.log('Email recibido en el login:', loginUser.email);
+        console.log('Usuario encontrado:', user);
+
+        const isPasswordMatchin = user && await bcrypt.compare(loginUser.password, user.password) 
 
 
-        const isPasswordMatchin = user && bcrypt.compare(loginUser.password, user.password) 
+        console.log('Contraseña recibida en el login:', loginUser.password);
+        console.log('Contraseña coincide:', isPasswordMatchin);
 
         if(!isPasswordMatchin){
             throw new HttpException('Email o contraseña incorrecto', HttpStatus.UNAUTHORIZED)
         }
+
+
         const token = await this.createToken(user);
-        return {token}
+        // Elimina campos sensibles como password
+    const { password, ...userWithoutPassword } = user;
+
+    // Devuelve tanto el token como la información del usuario
+    return {
+        user: userWithoutPassword,
+        token
+    };
         }
         
         private async createToken(user: User){
@@ -80,6 +96,10 @@ export class UsersService{
         const hashedPassword = await bcrypt.hash(createUser.password, 10);
         newUser.password = hashedPassword;// Asignar la contraseña encriptada al nuevo usuario
         console.log('Hashed password:', newUser.password);
+
+        // Enviar correo de bienvenida
+        await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
+
         return this.usersRepository.save(newUser)
     }
 

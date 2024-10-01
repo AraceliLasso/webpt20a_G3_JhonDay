@@ -60,7 +60,7 @@ export class CreateUserDto {
         required: true,
     })
     @IsNotEmpty()
-    @IsString()
+    @IsNumber()
     phone: number;
 
     @ApiProperty({
@@ -85,6 +85,5 @@ export class CreateUserDto {
     @IsOptional()
     address?: string;
 
-    @IsBoolean()
-    admin: boolean;
+
 }

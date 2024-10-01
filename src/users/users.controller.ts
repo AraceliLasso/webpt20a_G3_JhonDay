@@ -34,7 +34,10 @@ export class UsersController{
     @ApiResponse({ status: 500, description: 'Error inesperado al crear el usuario' })
     async createUser(@Body() createUser: CreateUserDto, @Req() request){
         const user = await this.usersService.createUser(createUser)
-        return (`Usuario ID '${user.id}'`)
+        return {
+            message: `Usuario creado exitosamente`,
+            userId: user.id
+        };
     }
 
     @Get('auth0')
