@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, UseGuards, HttpException, HttpStatus } from "@nestjs/common";
 import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
@@ -8,6 +8,7 @@ import { CategoryResponseDto } from "./dto/response-category.dto";
 import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
 import { Roles } from "src/decorators/roles.decorator";
+import { Product } from "src/products/products.entity";
 
 
 @ApiTags('Categories')
@@ -30,6 +31,21 @@ export class CategoriesController {
     async findOne(@Param('id') id: string): Promise<Category> {
         return this.categoriesService.findOne(id);
     }
+
+
+    @Get(':categoryId/products')
+    @ApiOperation({ summary: 'Obtener productos por categoría' })
+    @ApiResponse({ status: 200, description: 'Devuelve la lista de productos para la categoría especificada.' })
+    @ApiResponse({ status: 404, description: 'Categoría no encontrada.' })
+    @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+    async findProductsByCategory(@Param('categoryId') categoryId: string): Promise<Product[]> {
+        try {
+            return await this.categoriesService.findProductsByCategory(categoryId);
+        } catch (error) {
+            throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @Post()
     @ApiOperation({ summary: 'Crear una nueva categoría' })
     @ApiResponse({ status: 201, description: 'Categoría creada', type: CategoryResponseDto })
