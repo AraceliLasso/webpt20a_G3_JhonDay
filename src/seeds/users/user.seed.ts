@@ -8,7 +8,7 @@ export const seedUsers = async (dataSource: DataSource) => {
     const users = [
         {
             id: "d7b3b02b-8d26-4f95-94a8-1e54f2d89b6c",
-            name: "Juan Pérez",
+            name: "Juan Perez",
             email: "juan.perez@example.com",
             password: await bcrypt.hash("Password1!", 10), // Hash de la contraseña
             age: 28,
@@ -16,21 +16,21 @@ export const seedUsers = async (dataSource: DataSource) => {
             city: "Buenos Aires",
             address: "Avenida de Mayo 123",
             admin: true,
-        },
-        {
+          },
+          {
             id: "a1b4dede-5c4e-40c4-b3c8-42d18e962f6e",
-            name: "María López",
+            name: "Maria Lopez",
             email: "maria.lopez@example.com",
             password: await bcrypt.hash("Password2@", 10),
             age: 32,
             phone: "2345678901",
-            city: "Córdoba",
+            city: "Cordoba",
             address: "Calle Falsa 456",
             admin: false,
-        },
-        {
+          },
+          {
             id: "4cddc224-6b6a-4a8d-9a9c-f8e5a1d3d12b",
-            name: "Carlos González",
+            name: "Carlos Gonzalez",
             email: "carlos.gonzalez@example.com",
             password: await bcrypt.hash("Password3#", 10),
             age: 25,
@@ -38,10 +38,10 @@ export const seedUsers = async (dataSource: DataSource) => {
             city: "Rosario",
             address: "Calle del Libertador 789",
             admin: false,
-        },
-        {
+          },
+          {
             id: "e5e396b2-b1d7-4e6d-bc21-6bb9f7b4b656",
-            name: "Lucía Fernández",
+            name: "Lucia Fernandez",
             email: "lucia.fernandez@example.com",
             password: await bcrypt.hash("Password4$", 10),
             age: 29,
@@ -49,30 +49,30 @@ export const seedUsers = async (dataSource: DataSource) => {
             city: "La Plata",
             address: "Avenida 7 321",
             admin: false,
-        },
-        {
+          },
+          {
             id: "fb22f8a9-44e6-4b7e-896e-fd96f9c9f633",
-            name: "Andrés Martínez",
+            name: "Andres Martinez",
             email: "andres.martinez@example.com",
             password: await bcrypt.hash("Password5%", 10),
             age: 34,
             phone: "5678901234",
             city: "Mendoza",
-            address: "Calle San Martín 654",
+            address: "Calle San Martin 654",
             admin: false,
-        },
-        {
+          },
+          {
             id: "8a633f91-49c5-41d2-94ba-69d490d6ff7b",
-            name: "Sofía Ramírez",
+            name: "Sofia Ramirez",
             email: "sofia.ramirez@example.com",
             password: await bcrypt.hash("Password6^", 10),
             age: 22,
             phone: "6789012345",
-            city: "Tucumán",
+            city: "Tucuman",
             address: "Avenida Belgrano 987",
             admin: false,
-        },
-        {
+          },
+          {
             id: "739cfb5c-fd65-4519-a959-015216c2be7d",
             name: "Diego Torres",
             email: "diego.torres@example.com",
@@ -82,7 +82,7 @@ export const seedUsers = async (dataSource: DataSource) => {
             city: "Salta",
             address: "Calle 20 de Febrero 159",
             admin: false,
-        }
+          }
     ];
 
     for (const user of users) {
