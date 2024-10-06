@@ -8,18 +8,13 @@ async function bootstrap() {
 
   // Configura CORS
   const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
-  console.log({frontendUrl: process.env.FRONTEND_URL})
+  console.log({frontendUrl: process.env.FRONTEND_URL});
 
   app.enableCors({
     origin: frontendUrl,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-
-  //termina configuracion de cors
-
-  
-
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -33,8 +28,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup("api", app, document);
     
-
-  await app.listen(3010);
+  const port = process.env.PORT || 3010; // Cambia aquí para usar el puerto adecuado
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap();
