@@ -1,17 +1,19 @@
+// appointment.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Appointment } from './appointment.entity';
 import { AppointmentService } from './appointment.service';
 import { AppointmentController } from './appointment.controller';
-import { User } from 'src/users/users.entity'; // Importar si lo necesitas en el servicio
+import { Appointment } from './appointment.entity';
+import { User } from 'src/users/users.entity';
 import { Product } from 'src/products/products.entity';
+import { CategoriesModule } from 'src/category/category.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Appointment, User, Product]) // Asegúrate de importar este módulo
+    TypeOrmModule.forFeature([Appointment, User, Product]), // Asegúrate de que estos estén correctamente configurados
+    CategoriesModule, // Importa CategoriesModule aquí
   ],
-  providers: [AppointmentService],
   controllers: [AppointmentController],
-  exports: [AppointmentService],
+  providers: [AppointmentService],
 })
 export class AppointmentModule {}

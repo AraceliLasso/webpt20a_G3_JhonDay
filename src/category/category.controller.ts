@@ -32,18 +32,12 @@ export class CategoriesController {
         return this.categoriesService.findOne(id);
     }
 
-
     @Get(':categoryId/products')
     @ApiOperation({ summary: 'Obtener productos por categoría' })
-    @ApiResponse({ status: 200, description: 'Devuelve la lista de productos para la categoría especificada.' })
-    @ApiResponse({ status: 404, description: 'Categoría no encontrada.' })
-    @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-    async findProductsByCategory(@Param('categoryId') categoryId: string): Promise<Product[]> {
-        try {
-            return await this.categoriesService.findProductsByCategory(categoryId);
-        } catch (error) {
-            throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @ApiResponse({ status: 200, description: 'Productos obtenidos', type: [Product] })
+    @ApiResponse({ status: 404, description: 'Categoría no encontrada' })
+    async findProductsByCategory(@Param('categoryId') categoryId: string) {
+        return this.categoriesService.findProductsByCategory(categoryId);
     }
 
     @Post()

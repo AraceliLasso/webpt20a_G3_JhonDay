@@ -1,39 +1,33 @@
-import { Product } from "src/products/products.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "src/users/users.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne } from "typeorm";
-
-
-
+import { Category } from "src/category/category.entity";
 export enum Statusenum {
   PENDIENTE = 'pending',
   COMPLETADO = 'completed',
+  CANCELLED = 'cancelled',
 }
 
-@Entity({ name: "appointments" })
+@Entity({
+  name: "appointments",
+})
+
 export class Appointment {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({
-    type: "enum",
-    enum: Statusenum,
-    default: Statusenum.PENDIENTE,
-  })
-  status: Statusenum;
-
-  @Column("timestamp")
+  @Column()
   date: Date;
 
   @Column()
   description: string;
 
-  // Relación con User
-  @ManyToOne(() => User, (user) => user.appointments, { eager: true })
+  @Column({ default: 'pending' })
+  status: Statusenum;
+
+  @ManyToOne(() => User, (user) => user.appointments)
   user: User;
 
-  // Relación con product (servicio solicitado)
-  //*Product no es array [] porque queremos que por cada appointment haya un solo servicio/producto
-  @OneToOne(() => Product, product => product.appointment)
-    @JoinColumn({ name: "productId" })
-    product: Product;
+  @ManyToOne(() => Category, (category) => category.appointments)
+  category: Category; // Relación con Category
 }
+

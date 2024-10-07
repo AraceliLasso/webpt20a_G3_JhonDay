@@ -30,13 +30,13 @@ export class CategoriesService {
     }
     //*Gestion de Search
     async findProductsByCategory(categoryId: string): Promise<Product[]> {
-        const category = await this.categoryRepository.findOne({
-          where: { id: categoryId },
-          relations: ['products'],
-        });
-        if (!category) {
-          throw new HttpException("Category not found", HttpStatus.NOT_FOUND);
-        }
-        return category.products; // Asegúrate de que esto devuelve un array de productos
+      const category = await this.categoryRepository.findOne({
+        where: { id: categoryId },
+        relations: ['products'],
+      });
+      if (!category) {
+        throw new HttpException("Category not found", HttpStatus.NOT_FOUND);
       }
-    }             
+      return category.products; // Asegúrate de que esto devuelve un array de productos
+    }
+  }                                                                        

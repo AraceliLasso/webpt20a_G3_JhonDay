@@ -33,6 +33,5 @@ export class Product {
     category: Category;
 
     //*un appointment por product
-    @OneToOne(() => Appointment, appointment => appointment.product)
-    appointment: Appointment;
+   
 }

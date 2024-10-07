@@ -8,18 +8,17 @@ async function bootstrap() {
 
   // Configura CORS
   const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
-  console.log({frontendUrl: process.env.FRONTEND_URL})
+  console.log({ frontendUrl: process.env.FRONTEND_URL })
 
   app.enableCors({
-    origin: frontendUrl,
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    allowedHeaders: 'Content-Type, Accept',
+    maxAge: 3600,
   });
 
   //termina configuracion de cors
-
-  
-
 
   app.useGlobalPipes(new ValidationPipe());
 

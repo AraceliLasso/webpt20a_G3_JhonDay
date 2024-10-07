@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Product } from "src/products/products.entity";
 import { ApiProperty } from "@nestjs/swagger";
-
+import { Appointment } from "src/appointment/appointment.entity";
 @Entity({
     name: "categories"
 })
@@ -24,4 +24,7 @@ export class Category {
 
     @OneToMany(() => Product, product => product.category)
     products: Product[];
+
+    @OneToMany(() => Appointment, (appointment) => appointment.category)
+    appointments: Appointment[]; // Cambia "appoinments" a "appointments"
 }
