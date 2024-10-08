@@ -8,7 +8,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { MailService } from "src/notifications/mail.service";
+//import { MailService } from "src/notifications/mail.service";
 
 @Injectable()
 export class UsersService{
@@ -16,7 +16,7 @@ export class UsersService{
         @InjectRepository(User)
         private readonly usersRepository: Repository<User>,
         private readonly jwtService: JwtService, 
-        private readonly mailService: MailService
+        //private readonly mailService: MailService
     ){}
 
     async login(loginUser: LoginUserDto): Promise<{user: Partial<User>,token: string}>{
@@ -98,10 +98,46 @@ export class UsersService{
         console.log('Hashed password:', newUser.password);
 
         // Enviar correo de bienvenida
-        await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
+        //await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
 
         return this.usersRepository.save(newUser)
     }
+
+    async createUserOAuth(profile: any): Promise<User> {
+
+        console.log("profile", profile)
+        // Verificar si el usuario ya existe
+        const existingUser = await this.usersRepository.findOne({ where: { email: profile.email } });
+        if (existingUser) {
+        return existingUser;
+        }
+
+
+        const newUser = new User();
+        newUser.email = profile.email;
+        newUser.name = `${profile.given_name || ''} ${profile.family_name || ''}`.trim();
+
+        //newUser.name = `${profile.givenName} ${profile.familyName}`;// Asignar el nombre completo al campo 'name'
+        // newUser.picture = profile.picture; se obtine desde el registro de OAuth pero nosotros no tenemos ese campo en la BD 
+        
+        // Como estos campos no se obtienen de OAuth le pasamos el valor predeterminado de null
+        newUser.phone = null; 
+        newUser.city = null;
+        newUser.address = null;
+        newUser.age = null;
+        newUser.password = "passwordOAuth";
+        
+        // Guardar el nuevo usuario y devolverlo
+    try {
+        return await this.usersRepository.save(newUser);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al guardar el usuario:', error);
+        throw new Error('Error al crear el usuario');
+    }
+    }
+    
+
 
     async findOneEmail(email: string){
         return this.usersRepository.findOne( {where: {email}})

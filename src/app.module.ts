@@ -13,6 +13,8 @@ import { SeedModule } from './seeds/seeds-module';
 import { StripeModule } from './stripe/stripe.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { MailModule } from './notifications/mail.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -34,7 +36,8 @@ import { MailModule } from './notifications/mail.module';
       SharedModule,
       StripeModule,
       FileUploadModule,
-      MailModule
+      MailModule,
+      AuthModule
     ],
   controllers: [AppController],
   providers: [AppService],
