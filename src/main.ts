@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { auth } from 'express-openid-connect';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,8 +13,8 @@ async function bootstrap() {
   console.log({ frontendUrl: process.env.FRONTEND_URL })
 
   app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: frontendUrl,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Accept',
     maxAge: 3600,
