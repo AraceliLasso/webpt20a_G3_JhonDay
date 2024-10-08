@@ -8,12 +8,14 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags("appointments")
 @Controller('appointments')
 export class AppointmentController {
-  constructor(private readonly appointmentService: AppointmentService) {}
+  constructor(private readonly appointmentService: AppointmentService) { }
 
   @Post()
-    async create(@Body() createAppointmentDto: CreateAppointmentDto) {
-        return await this.appointmentService.createAppointment(createAppointmentDto);
-    }
+  @ApiOperation({ summary: 'Crear una nueva cita' })
+  @ApiResponse({ status: 201, description: 'Cita creada exitosmente', type: CreateAppointmentDto})
+  async create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return await this.appointmentService.createAppointment(createAppointmentDto);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Obtener todas las citas' })

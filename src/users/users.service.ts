@@ -98,7 +98,7 @@ export class UsersService{
         console.log('Hashed password:', newUser.password);
 
         // Enviar correo de bienvenida
-        await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
+        // await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
 
         return this.usersRepository.save(newUser)
     }
