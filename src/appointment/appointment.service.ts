@@ -75,6 +75,18 @@ async findOne(id: string): Promise<Appointment> {
     await this.appointmentRepository.remove(appointment);
   }
 
+  async findAppointmentsByUser (userId: string): Promise<Appointment[]> {
+    const userExist = await this.userRepository.findOne({ where: { id: userId } });
+    if (!userExist) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+  
+    return await this.appointmentRepository.find({
+      where: { user: userExist },
+      relations: ['user', 'category'],
+    });
+  }
+
   async findAll(): Promise<Appointment[]> {
     return await this.appointmentRepository.find({ relations: ['user', 'category'] });
   }

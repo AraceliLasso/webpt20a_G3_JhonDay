@@ -9,9 +9,6 @@ export class SeedModule {
     constructor(private dataSource: DataSource) {}
 
     async onModuleInit() {
-        await seedCategories(this.dataSource);
-        await seedProducts(this.dataSource); 
-        await seedUsers(this.dataSource); 
-        await seedAppointments(this.dataSource); 
+
     }
 }
