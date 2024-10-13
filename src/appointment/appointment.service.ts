@@ -25,7 +25,7 @@ export class AppointmentService {
   // Crear una cita
   async createAppointment(createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
     try {
-        const { user, categoryId } = createAppointmentDto;
+        const { user, categoryId, date } = createAppointmentDto;
 
         // Verificar si el usuario existe
         const userExist = await this.userRepository.findOne({ where: { id: user } });
@@ -37,6 +37,19 @@ export class AppointmentService {
         const categoryExist = await this.categoriesService.findOne(categoryId); 
         if (!categoryExist) {
             throw new NotFoundException(`Category with ID ${categoryId} not found`);
+        }
+
+        // Validar la fecha y hora de la cita
+        const appointmentDate = new Date(date);
+        const dayOfWeek = appointmentDate.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+        const hour = appointmentDate.getHours();
+
+        // Comprobar que la cita sea de lunes a viernes (1 a 5) y entre 9 AM (9) y 6 PM (18)
+        if (dayOfWeek < 1 || dayOfWeek > 5 || hour < 9 || hour > 17) {
+            throw new HttpException({
+                status: HttpStatus.BAD_REQUEST,
+                message: 'Appointments can only be scheduled from Monday to Friday between 9 AM and 6 PM.',
+            }, HttpStatus.BAD_REQUEST);
         }
 
         // Crear la cita
@@ -55,6 +68,7 @@ export class AppointmentService {
         }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
 async findOne(id: string): Promise<Appointment> {
   const appointment = await this.appointmentRepository.findOne({ where: { id }, relations: ['user', 'category'] });
   if (!appointment) {
