@@ -61,9 +61,15 @@ export class UsersController{
     async getUsersPag(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 5
-    ): Promise<UserWithAdminDto[]>{ 
+    ): Promise<UserWithAdminDto[]> { 
+        console.log('getUsersPag called');
         return this.usersService.getUsers(page, limit);
+    
     }
+
+
+    
+
 
     @Get(':id')
     @ApiOperation({ summary: 'Obtener usuario por ID' })

@@ -56,27 +56,28 @@ export class UsersService{
         }
     
 
-    async getUsers(page: number, limit: number): Promise<UserWithAdminDto[]> {
-        const offset = (page - 1) * limit; 
-
-        const users = await this.usersRepository.find({
-            skip: offset,
-            take: limit 
-        })
-
-        return users.map(user => {
-            const userDto = new UserWithAdminDto();
-            userDto.name = user.name;
-            userDto.age = user.age;
-            userDto.email = user.email;
-            userDto.address = user.address;
-            userDto.phone = user.phone;
-            userDto.city = user.city;
-            userDto.admin = user.admin
-            return userDto
-        })
-    }
-
+        async getUsers(page: number, limit: number): Promise<UserWithAdminDto[]> {
+            const offset = (page - 1) * limit; 
+        
+            const users = await this.usersRepository.find({
+                skip: offset,
+                take: limit 
+            });
+        
+            return users.map(user => {
+                const userDto = new UserWithAdminDto();
+                userDto.id = user.id;  // Asegúrate de devolver el id también
+                userDto.name = user.name;
+                userDto.age = user.age;
+                userDto.email = user.email;
+                userDto.address = user.address;
+                userDto.phone = user.phone;
+                userDto.city = user.city;
+                userDto.admin = user.admin;
+                return userDto;
+            });
+        }
+        
 
     async getUserById(id: string): Promise<User | undefined>{
         return this.usersRepository.findOne({ where: {id}})

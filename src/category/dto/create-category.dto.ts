@@ -11,13 +11,16 @@ export class CreateCategoryDto {
     @IsNotEmpty()
     name: string;
 
+
+    /////////////////////////jhon
     @ApiProperty({
         type: Number,
         description: "Precio de la categoría",
         required: true,
     })
-    @IsNumber() // Verifica que el valor es un número
-    @IsPositive() // Asegura que el número sea positivo
-    @IsNotEmpty() // Asegura que no esté vacío
-    price: number; // Agrega el nuevo campo price
+    @IsNumber() 
+    @IsPositive() 
+    @IsNotEmpty() 
+    price: number;
+    /////////////////////////jhon
 }

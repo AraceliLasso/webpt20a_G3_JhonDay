@@ -7,18 +7,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configura CORS
-  const frontendUrl = process.env.FRONTEND_URL; // Usa la URL del frontend aquí
-  console.log({ frontendUrl: process.env.FRONTEND_URL })
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'; // Definir la URL de frontend
+  console.log({ frontendUrl });
 
   app.enableCors({
-    origin: '*',
+    origin: frontendUrl,  // Asegúrate de que esta URL sea la correcta
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    allowedHeaders: 'Content-Type, Accept',
+    credentials: true,  // Si usas cookies o autenticación basada en sesiones
+    allowedHeaders: 'Authorization,Content-Type, Accept',
     maxAge: 3600,
   });
-
-  //termina configuracion de cors
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -31,7 +29,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup("api", app, document);
-    
 
   await app.listen(3010);
 }

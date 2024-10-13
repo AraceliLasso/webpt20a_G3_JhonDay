@@ -29,7 +29,7 @@ export class Category {
         required: true,
     })
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
-    price: number; // Agregar el nuevo campo price
+    price: number; //////////////jhon
 
     @OneToMany(() => Product, product => product.category)
     products: Product[];
