@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UserWithAdminDto } from "./dto/admin-user.dto";
 import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from "@nestjs/swagger";
@@ -11,6 +11,9 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { Roles } from "src/decorators/roles.decorator";
 import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
+import { UpdateProfileDto } from "../auth/dto/update-usergoogle.dt";
+import { MailService } from "src/notifications/mail.service";
+
 
 
 
@@ -18,7 +21,10 @@ import { RolesGuard } from "src/guard/roles.guard";
 @ApiTags("Users")
 @Controller('users')
 export class UsersController{
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly mailService: MailService
+    ) {}
 
     @Post('login')
     @ApiOperation({ summary: 'Loguear un usuario' })
@@ -34,19 +40,18 @@ export class UsersController{
     @ApiResponse({ status: 500, description: 'Error inesperado al crear el usuario' })
     async createUser(@Body() createUser: CreateUserDto, @Req() request){
         const user = await this.usersService.createUser(createUser)
+
+         // Enviar correo de confirmación
+        await this.mailService.sendMail(
+        createUser.email,
+        'Bienvenido a JhonDay',
+        'Gracias por registrarte.',
+        '<h1>Te damos la bienvenida a JhonDay!!</h1><p>Gracias por registrarte.</p>',
+        );
         return {
             message: `Usuario creado exitosamente`,
             userId: user.id
         };
-    }
-
-    @Get('auth0')
-    getAuth0(@Req() request){
-        console.log(JSON.stringify(request.oidc));
-        console.log(JSON.stringify(request.oidc.idToken)); 
-        console.log('OIDC User:', JSON.stringify(request.oidc.user));
-    return request.oidc.user ? JSON.stringify(request.oidc.user) : 'User not authenticated';
-        //return JSON.stringify(request.oidc.user)
     }
 
     @Get()  

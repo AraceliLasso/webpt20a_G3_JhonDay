@@ -4,10 +4,11 @@ import { LoginUserDto } from "./dto/login-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt';
 import { UserWithAdminDto } from "./dto/admin-user.dto";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { User } from "./users.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UpdateProfileDto } from "../auth/dto/update-usergoogle.dt";
 //import { MailService } from "src/notifications/mail.service";
 
 @Injectable()
@@ -83,6 +84,7 @@ export class UsersService{
     }
 
     async createUser(createUser: CreateUserDto): Promise<User>{
+        try{
         // Verificar que las contraseñas coinciden antes de cualquier procesamiento
         if(createUser.password !== createUser.passwordConfirm){
             throw new HttpException('Las contraseñas no coinciden', 400)
@@ -97,14 +99,15 @@ export class UsersService{
         newUser.password = hashedPassword;// Asignar la contraseña encriptada al nuevo usuario
         console.log('Hashed password:', newUser.password);
 
-        // Enviar correo de bienvenida
-        //await this.mailService.sendRegistrationEmail(newUser.email, newUser.name);
-
         return this.usersRepository.save(newUser)
+    } catch (error) {
+        console.error('Error al crear el usuario:', error);
+        throw new HttpException('Error al crear el usuario', 500);
+    }
     }
 
     async createUserOAuth(profile: any): Promise<User> {
-
+        try{
         console.log("profile", profile)
         // Verificar si el usuario ya existe
         const existingUser = await this.usersRepository.findOne({ where: { email: profile.email } });
@@ -117,25 +120,51 @@ export class UsersService{
         newUser.email = profile.email;
         newUser.name = `${profile.given_name || ''} ${profile.family_name || ''}`.trim();
 
-        //newUser.name = `${profile.givenName} ${profile.familyName}`;// Asignar el nombre completo al campo 'name'
-        // newUser.picture = profile.picture; se obtine desde el registro de OAuth pero nosotros no tenemos ese campo en la BD 
-        
         // Como estos campos no se obtienen de OAuth le pasamos el valor predeterminado de null
-        newUser.phone = null; 
-        newUser.city = null;
-        newUser.address = null;
-        newUser.age = null;
+        newUser.phone = profile.phone || null; 
+        newUser.city = profile.city || null;
+        newUser.address = profile.address || null;
+        newUser.age = profile.age || null;
         newUser.password = "passwordOAuth";
         
         // Guardar el nuevo usuario y devolverlo
-    try {
         return await this.usersRepository.save(newUser);
+
     } catch (error) {
-        // Manejo de errores
         console.error('Error al guardar el usuario:', error);
-        throw new Error('Error al crear el usuario');
+        throw new HttpException('Error al crear el usuario con OAuth', 500);
     }
     }
+
+    async updateProfile( email: string , updateProfileDto: UpdateProfileDto): Promise<User> {
+        // const email = decodedToken.email;
+        // console.log("decodedToken", decodedToken)
+        console.log("email capturado del decodedToken", email)
+
+        if (!email) {
+            throw new UnauthorizedException('Email no encontrado en el token decodificado.');
+        }
+
+        const user = await this.usersRepository.findOne({ where: { email } });
+        console.log("Email encontrado en updateProfile", email)
+    
+        if (!user) {
+            throw new NotFoundException('Usuario no encontrado');
+        }
+    
+        Object.assign(user, updateProfileDto);
+        console.log("updateProfileDto", updateProfileDto)
+
+        try {
+            const updatedUser = await this.usersRepository.save(user);
+            console.log("Usuario actualizado en la base de datos:", updatedUser);
+            return updatedUser
+        } catch (error) {
+            console.error("Error al guardar en la base de datos:", error);
+            throw new HttpException('Error al actualizar el perfil del usuario', 500);
+        }
+
+        }
     
 
 

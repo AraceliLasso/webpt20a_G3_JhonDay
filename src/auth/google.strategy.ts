@@ -14,23 +14,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
 }
 
-//     async validate(
-//     accessToken: string,
-//     refreshToken: string,
-//     profile: any,
-//     done: VerifyCallback,
-// ): Promise<any> {
-//     const { name, emails, photos } = profile;
-//     const user = {
-//         email: emails[0].value,
-//         firstName: name.givenName,
-//         lastName: name.familyName,
-//         picture: photos[0].value,
-//         accessToken,
-//     };
-//     console.log("user", user)
+async validate(accessToken: string, refreshToken: string, profile: any) {
+    console.log('Google profile:', profile); // Imprime el perfil de Google para debug
 
-//     const userInDb = await this.authService.validateOAuthLogin(user);// Valida el usuario en tu sistema
-//     done(null, userInDb); // El servicio auth manejará el registro o la validación del usuario.
-//     }
+    const { emails, name, photos } = profile;
+
+    // Retorna la información que necesitas
+    return {
+        email: emails[0].value, // Extrae el email
+        name: name.givenName, // Nombre del usuario
+        picture: photos[0].value, // URL de la foto
+    };
+}
+
 }

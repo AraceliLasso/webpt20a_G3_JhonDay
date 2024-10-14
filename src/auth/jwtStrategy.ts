@@ -15,7 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Este método se ejecuta si el token es válido
     async validate(payload: any) {
+      console.log("Payload from token:", payload);
     // Aquí puedes devolver cualquier dato que quieras que esté disponible en el contexto de la solicitud
-    return { userId: payload.sub, username: payload.username };
+    return { userId: payload.sub, email: payload.email};
     }
 }

@@ -16,7 +16,7 @@ async function bootstrap() {
     origin: frontendUrl,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type,  Authorization',
     maxAge: 3600,
   });
 
