@@ -5,6 +5,15 @@ export class UserWithAdminDto {
 
     @ApiProperty({
         type: String,
+        description: "El identificador único del usuario",
+        required: true,
+    })
+    @IsNotEmpty()
+    @IsString()  // O @IsNumber() si es un número
+    id: string;  // O id: number; dependiendo de cómo esté definido en tu base de datos
+
+    @ApiProperty({
+        type: String,
         description: "El nombre del usuario",
         required: true,
     })
@@ -32,7 +41,7 @@ export class UserWithAdminDto {
     age: number;
 
     @ApiProperty({
-        type: Number,
+        type: String,
         description: "El número de teléfono del usuario",
         required: true,
     })
@@ -61,7 +70,7 @@ export class UserWithAdminDto {
     @MinLength(5)
     @IsOptional()
     address?: string;
-    
+
     @ApiProperty({
         type: Boolean,
         description: "Indica si el usuario tiene permisos de administrador",

@@ -52,6 +52,29 @@ export class ProductController {
     }
 
 
+    // @Post()
+    // @ApiOperation({ summary: 'Crear un nuevo producto' })
+    // @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
+    // @ApiResponse({ status: 500, description: 'Error inesperado al crear el producto' })
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles('admin')
+    // @ApiSecurity('bearer')
+    // async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+    //     try {
+    //         const product = await this.productService.create(createProductDto);
+    //         return product; // Aquí puedes devolver el producto creado
+    //     } catch (error) {
+    //         // Manejo del error, puedes registrar el error o realizar otras acciones
+    //         console.error('Error al crear el producto:', error);
+    //         throw new InternalServerErrorException('Error inesperado al crear el producto');
+    //     }
+    // }
+
+
+
+
+    ///////////////////////Jhon
+
     @Post()
     @ApiOperation({ summary: 'Crear un nuevo producto' })
     @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: ProductResponseDto })
@@ -59,16 +82,21 @@ export class ProductController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('admin')
     @ApiSecurity('bearer')
-    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+    async create(
+        @Body() createProductDto: CreateProductDto
+    ): Promise<ProductResponseDto> {
         try {
-            const product = await this.productService.create(createProductDto);
-            return product; // Aquí puedes devolver el producto creado
+            return await this.productService.create(createProductDto);
         } catch (error) {
-            // Manejo del error, puedes registrar el error o realizar otras acciones
             console.error('Error al crear el producto:', error);
             throw new InternalServerErrorException('Error inesperado al crear el producto');
         }
     }
+
+
+
+
+
     @Post('search')
     @ApiOperation({ summary: 'Buscar productos por nombre, categoría, precio o descripción' })
     @ApiResponse({ status: 200, description: 'Productos encontrados', type: [Product] })

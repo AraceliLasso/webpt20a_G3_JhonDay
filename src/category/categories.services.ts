@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { Category } from "./category.entity";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { Product } from "src/products/products.entity";
-
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 @Injectable()
 export class CategoriesService {
     constructor(
@@ -39,4 +39,17 @@ export class CategoriesService {
       }
       return category.products; // Asegúrate de que esto devuelve un array de productos
     }
+
+
+    ///////////////////jhon
+    async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+      const category = await this.categoryRepository.findOne({ where: { id } });
+      if (!category) {
+        throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+      } 
+      Object.assign(category, updateCategoryDto);
+      return this.categoryRepository.save(category);
+    }
+    
   }                                                                        
+/////////////////////////jhon

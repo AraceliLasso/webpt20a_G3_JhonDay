@@ -1,5 +1,5 @@
 
-import { Controller, Get, Post, Body, Param, UseGuards, HttpException, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, UseGuards, Patch, HttpException, HttpStatus, Put, BadRequestException } from "@nestjs/common";
 import { CategoriesService } from "./categories.services";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
@@ -9,7 +9,7 @@ import { AuthGuard } from "src/guard/auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
 import { Roles } from "src/decorators/roles.decorator";
 import { Product } from "src/products/products.entity";
-
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -50,6 +50,17 @@ export class CategoriesController {
         const newCategory = await this.categoriesService.create(createCategoryDto);
         return new CategoryResponseDto(newCategory.id, newCategory.name);
     }
-
-
+/////////////////////////jhon
+@Put(':id')
+async update(
+  @Param('id') id: string, 
+  @Body() updateCategoryDto: UpdateCategoryDto
+): Promise<Category> {
+  try {
+    return await this.categoriesService.update(id, updateCategoryDto);
+  } catch (error) {
+    throw new BadRequestException('Error al actualizar la categoría: ' + error.message);
+  }
 }
+}
+/////////////////////////jhon

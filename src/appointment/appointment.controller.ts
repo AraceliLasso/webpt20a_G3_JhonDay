@@ -34,14 +34,22 @@ export class AppointmentController {
     return new AppointmentResponseDto(appointment);
   }
 
+
+
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una cita por ID' })
   @ApiResponse({ status: 200, description: 'Cita actualizada', type: AppointmentResponseDto })
   @ApiResponse({ status: 404, description: 'Cita no encontrada' })
-  async update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto): Promise<AppointmentResponseDto> {
+  async update(
+    @Param('id') id: string, 
+    @Body() updateAppointmentDto: UpdateAppointmentDto
+  ): Promise<AppointmentResponseDto> {
     const updatedAppointment = await this.appointmentService.updateAppointment(id, updateAppointmentDto);
     return new AppointmentResponseDto(updatedAppointment);
   }
+
+
+  
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar una cita por ID' })
@@ -50,4 +58,13 @@ export class AppointmentController {
   async remove(@Param('id') id: string): Promise<void> {
     return this.appointmentService.removeAppointment(id);
   }
+
+  @Get(':userId/appointments')
+  @ApiOperation({ summary: 'Obtener citas de un usuario' })
+  @ApiResponse({ status: 200, description: 'Citas encontradas', type: [AppointmentResponseDto] })
+  async findAppointmentsByUser(@Param('userId') userId: string): Promise<AppointmentResponseDto[]> {
+    const appointments = await this.appointmentService.findAppointmentsByUser(userId);
+    return appointments.map((appointment) => new AppointmentResponseDto(appointment));
+  }
+
 }

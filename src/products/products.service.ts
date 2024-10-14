@@ -8,7 +8,7 @@ import { SearchDto } from "./dto/search-product.dto";
 import { ProductResponseDto } from "./dto/response-product.dto";
 import { CategoriesService } from "src/category/categories.services";
 import { CategoryResponseDto } from "src/category/dto/response-category.dto";
-
+import { InternalServerErrorException } from "@nestjs/common";
 
 
 @Injectable()
@@ -21,21 +21,52 @@ export class ProductService {
         private readonly categoriesService: CategoriesService, // Servicio para manejar categorías
     ) { }
 
-    async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
-        const product = new Product();
-        product.name = createProductDto.name;
-        product.description = createProductDto.description;
-        product.price = createProductDto.price;
-        product.image = createProductDto.image;
-        product.categoryId = createProductDto.categoryId; // Asegúrate de que esto esté bien manejado
+    // async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+    //     const product = new Product();
+    //     product.name = createProductDto.name;
+    //     product.description = createProductDto.description;
+    //     product.price = createProductDto.price;
+    //     product.image = createProductDto.image;
+    //     product.categoryId = createProductDto.categoryId; // Asegúrate de que esto esté bien manejado
 
-        // Guarda el producto y obtiene la categoría para el DTO de respuesta
-        const savedProduct = await this.productRepository.save(product);
-        const category = await this.categoriesService.findOne(product.categoryId);
+    //     // Guarda el producto y obtiene la categoría para el DTO de respuesta
+    //     const savedProduct = await this.productRepository.save(product);
+    //     const category = await this.categoriesService.findOne(product.categoryId);
 
-        // Ahora pasa la categoría como argumento
-        return new ProductResponseDto(savedProduct, new CategoryResponseDto(category.id, category.name));
-    }
+    //     // Ahora pasa la categoría como argumento
+    //     return new ProductResponseDto(savedProduct, new CategoryResponseDto(category.id, category.name));
+    // }
+
+
+
+
+
+///////////////////Jhon
+
+async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+  const category = await this.categoriesService.findOne(createProductDto.categoryId);
+  if (!category) {
+    throw new NotFoundException(`Categoría con ID ${createProductDto.categoryId} no encontrada`);
+  }
+  const product = this.productRepository.create({
+    ...createProductDto,
+    categoryId: createProductDto.categoryId,
+  });
+
+  try {
+    const savedProduct = await this.productRepository.save(product);
+    return new ProductResponseDto(savedProduct, {
+      id: category.id,
+      name: category.name,
+    });
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
+    throw new InternalServerErrorException('Error al guardar el producto');
+  }
+}
+
+
+
 
     async getProducts(page: number, limit: number) {
         return await this.productRepository.find({
@@ -151,6 +182,8 @@ export class ProductService {
     
         return uniqueProducts;
       }
+
+      
     }
     
 
