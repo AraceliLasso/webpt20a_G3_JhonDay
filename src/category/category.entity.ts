@@ -28,7 +28,7 @@ export class Category {
         description: "Precio de la categoría",
         required: true,
     })
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     price: number; //////////////jhon
 
     @OneToMany(() => Product, product => product.category)
