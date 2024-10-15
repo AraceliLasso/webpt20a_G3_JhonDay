@@ -1,34 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 
 @Injectable()
 export class MailService {
-    private transporter: nodemailer.Transporter;
 
-    constructor() {
-    this.transporter = nodemailer.createTransport({
-      service: 'gmail', // Puedes usar otros servicios como Outlook, Yahoo, etc.
-        auth: {
-        user: process.env.EMAIL_USER, // Tu correo electrónico
-        pass: process.env.EMAIL_PASS         // Tu contraseña o clave de aplicación
-        }
+  private oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,     // Client ID de Google
+    process.env.GOOGLE_CLIENT_SECRET, // Client Secret de Google
+    'https://developers.google.com/oauthplayground'
+  );
+
+
+    constructor() { // Configura el Refresh Token de OAuth2
+    this.oauth2Client.setCredentials({
+      refresh_token: process.env.REFRESH_TOKEN,
     });
+    
+    
     }
 
-    async sendRegistrationEmail(to: string, username: string) {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,  // Remitente
-      to: to,                       // Correo del destinatario
-        subject: 'Bienvenido a nuestra página',
-        text: `Hola ${username}, gracias por registrarte en nuestra página.`,
-        html: `<p>Hola <strong>${username}</strong>, gracias por registrarte en nuestra página.</p>`
-    };
-
-    try {
-        await this.transporter.sendMail(mailOptions);
-        console.log('Correo enviado con éxito');
-    } catch (error) {
+    async sendMail(to: string, subject: string, text: string, html: string) {
+      try{
+        const accessToken = await this.oauth2Client.getAccessToken();
+    
+        const transporter = nodemailer.createTransport({// Crea el transporte de Nodemailer con OAuth2
+        service: 'gmail', // Puedes usar otros servicios como Outlook, Yahoo, etc.
+          auth: {
+          type: 'OAuth2',
+          user: process.env.EMAIL_USER,
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+          accessToken:accessToken.token || '', // Genera el Access Token automáticamente
+  },
+});
+      
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text,
+        html,
+      };
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Email enviado:', result);
+        return result;
+      } catch (error) {
         console.error('Error al enviar el correo:', error);
-    }
+        throw error; // Propaga el error para manejarlo adecuadamente
+      }
     }
 }
