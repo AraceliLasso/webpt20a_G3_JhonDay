@@ -4,13 +4,11 @@ import { google } from 'googleapis';
 
 @Injectable()
 export class MailService {
-
   private oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,     // Client ID de Google
     process.env.GOOGLE_CLIENT_SECRET, // Client Secret de Google
     'https://developers.google.com/oauthplayground'
   );
-
 
     constructor() { // Configura el Refresh Token de OAuth2
     this.oauth2Client.setCredentials({
@@ -48,7 +46,8 @@ export class MailService {
         return result;
       } catch (error) {
         console.error('Error al enviar el correo:', error);
-        throw error; // Propaga el error para manejarlo adecuadamente
+        throw error
       }
+
     }
 }

@@ -19,6 +19,11 @@ export class CreateAppointmentDto {
   @IsNotEmpty()
   user: string;
 
+  @ApiProperty({ description: 'Correo electrónico del usuario asociado con la cita', example: 'usuario@ejemplo.com' })
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+
   @ApiProperty({ description: 'ID de la categoría asociada con la cita', example: '123e4567-e89b-12d3-a456-426614174000' })
   @IsUUID()
   @IsNotEmpty()

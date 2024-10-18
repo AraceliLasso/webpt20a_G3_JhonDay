@@ -7,11 +7,13 @@ import { Appointment } from './appointment.entity';
 import { User } from 'src/users/users.entity';
 import { Product } from 'src/products/products.entity';
 import { CategoriesModule } from 'src/category/category.module';
+import { MailModule } from 'src/notifications/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Appointment, User, Product]), // Asegúrate de que estos estén correctamente configurados
     CategoriesModule, // Importa CategoriesModule aquí
+    MailModule
   ],
   controllers: [AppointmentController],
   providers: [AppointmentService],

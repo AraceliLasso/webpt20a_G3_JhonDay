@@ -46,6 +46,7 @@ async googleLogin(@Body() body: { token: string }) {
 
         // Enviar correo de bienvenida si el usuario es nuevo
         if (isNewUser) { 
+            console.log('Enviando correo a:', user.email);
             setImmediate(() => {
             this.mailService.sendMail(
                 user.email,

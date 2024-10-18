@@ -4,18 +4,38 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { AppointmentResponseDto } from './dto/response-appointment.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { MailService } from 'src/notifications/mail.service';
 
 @ApiTags("appointments")
 @Controller('appointments')
 export class AppointmentController {
-  constructor(private readonly appointmentService: AppointmentService) { }
+  constructor(
+    private readonly appointmentService: AppointmentService,
+    private readonly mailService: MailService,
+
+  ) { }
 
   @Post()
   @ApiOperation({ summary: 'Crear una nueva cita' })
   @ApiResponse({ status: 201, description: 'Cita creada exitosmente', type: CreateAppointmentDto})
   async create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return await this.appointmentService.createAppointment(createAppointmentDto);
+    const appointment = await this.appointmentService.createAppointment(createAppointmentDto);
+
+    setImmediate(() => {
+      this.mailService.sendMail(
+          createAppointmentDto.email, // Asumiendo que el DTO tiene el correo del usuario
+          'Confirmación de Cita',
+          'Tu cita ha sido creada exitosamente.',
+          `<h1>Confirmación de Cita</h1><p>Tu cita para el ${appointment.date} ha sido creada exitosamente.</p>`,
+      ).catch((error) => {
+          console.error("Error al enviar correo de confirmación:", error);
+      });
+  });
+
+    return appointment
   }
+
+
 
   @Get()
   @ApiOperation({ summary: 'Obtener todas las citas' })
